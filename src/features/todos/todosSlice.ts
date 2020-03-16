@@ -15,7 +15,7 @@ const initialState: TodoState = {
   todos: [],
 }
 
-const todos = createSlice({
+const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
@@ -28,7 +28,7 @@ const todos = createSlice({
 })
 
 // Exporting actions from counter slice
-export const { addTodo, remove, toggle } = todos.actions
+export const { addTodo, remove, toggle } = todosSlice.actions
 
 /**
  * Todos state selector
@@ -37,4 +37,4 @@ export const { addTodo, remove, toggle } = todos.actions
  */
 export const selectTodos = (state: RootState) => state.todos
 
-export const todosReducer = todos.reducer
+export const todosReducer = todosSlice.reducer

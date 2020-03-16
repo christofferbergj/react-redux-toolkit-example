@@ -1,19 +1,18 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
 import {
   decrement,
   increment,
-  incrementByAmount,
   incrementAsync,
+  incrementByAmount,
   reset,
   selectCount,
 } from './counterSlice'
 
 // Components
 import {
-  Box,
   Button,
-  Heading,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -57,12 +56,8 @@ export const Counter = () => {
 
   return (
     <>
-      <Box>
-        <Heading mb={2} fontSize={'lg'}>
-          Counter example
-        </Heading>
-
-        <Stack isInline spacing={4} mt={4} align={'center'}>
+      <Stack spacing={4}>
+        <Stack isInline spacing={4} align={'center'}>
           <Button isDisabled={isLoading} onClick={() => count > 0 && dispatch(decrement())}>
             -
           </Button>
@@ -76,7 +71,7 @@ export const Counter = () => {
           </Button>
         </Stack>
 
-        <Stack isInline spacing={4} mt={6}>
+        <Stack isInline spacing={4}>
           <Stack isInline spacing={2}>
             <Button onClick={() => dispatch(incrementByAmount(incrementAmount))} size={'sm'}>
               Increment
@@ -103,7 +98,7 @@ export const Counter = () => {
             />
           </Slider>
         </Stack>
-      </Box>
+      </Stack>
     </>
   )
 }

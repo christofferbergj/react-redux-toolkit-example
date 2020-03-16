@@ -14,7 +14,7 @@ const initialState: CounterState = {
   value: 0,
 }
 
-const counter = createSlice({
+const counterSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
@@ -39,7 +39,7 @@ const counter = createSlice({
 })
 
 // Exporting actions from counter slice
-export const { increment, decrement, incrementByAmount, reset } = counter.actions
+export const { increment, decrement, incrementByAmount, reset } = counterSlice.actions
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -63,4 +63,4 @@ export const selectCount = (state: RootState) => state.counter.value
  * Counter reducer
  * @type {Reducer<CounterState>}
  */
-export const counterReducer = counter.reducer
+export const counterReducer = counterSlice.reducer
