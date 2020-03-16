@@ -29,8 +29,8 @@ const counterSlice = createSlice({
       state.value -= 1
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
+    incrementByAmount: (state, { payload }: PayloadAction<number>) => {
+      state.value += payload
     },
     reset: state => {
       state.value = 0
