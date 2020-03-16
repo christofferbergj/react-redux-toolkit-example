@@ -1,0 +1,109 @@
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+  incrementAsync,
+  reset,
+  selectCount,
+} from './counterSlice'
+
+// Components
+import {
+  Box,
+  Button,
+  Heading,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Stack,
+  Text,
+} from '@chakra-ui/core/dist'
+
+export const Counter = () => {
+  // State selectors
+  const count = useSelector(selectCount)
+
+  // Redux dispatch
+  const dispatch = useDispatch()
+
+  // Local state
+  const [incrementAmount, setIncrementAmount] = useState<number>(4)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  /**
+   * Handle slider change event
+   * @param {number} value
+   */
+  const handleSliderChange = (value: number) => setIncrementAmount(value)
+
+  /**
+   * Handle increment async
+   * @returns {Promise<void>}
+   */
+  const handleIncrementAsync = async () => {
+    setIsLoading(true)
+
+    try {
+      await dispatch(incrementAsync(incrementAmount))
+    } catch (err) {
+      console.log('Something happened: ', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <>
+      <Box>
+        <Heading mb={2} fontSize={'lg'}>
+          Counter example
+        </Heading>
+
+        <Stack isInline spacing={4} mt={4} align={'center'}>
+          <Button isDisabled={isLoading} onClick={() => count > 0 && dispatch(decrement())}>
+            -
+          </Button>
+
+          <Text as={'span'} fontSize={'2xl'} fontWeight={'medium'}>
+            {count}
+          </Text>
+
+          <Button isDisabled={isLoading} onClick={() => dispatch(increment())}>
+            +
+          </Button>
+        </Stack>
+
+        <Stack isInline spacing={4} mt={6}>
+          <Stack isInline spacing={2}>
+            <Button onClick={() => dispatch(incrementByAmount(incrementAmount))} size={'sm'}>
+              Increment
+            </Button>
+
+            <Button isLoading={isLoading} onClick={handleIncrementAsync} size={'sm'}>
+              Increment async
+            </Button>
+
+            <Button onClick={() => dispatch(reset())} size={'sm'}>
+              Reset
+            </Button>
+          </Stack>
+
+          <Slider value={incrementAmount} max={20} onChange={handleSliderChange} flex={1}>
+            <SliderTrack />
+            <SliderFilledTrack />
+            <SliderThumb
+              fontSize={'sm'}
+              width={'40px'}
+              height={'25px'}
+              fontWeight={'medium'}
+              children={incrementAmount}
+            />
+          </Slider>
+        </Stack>
+      </Box>
+    </>
+  )
+}
