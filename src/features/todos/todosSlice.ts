@@ -1,34 +1,54 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import nanoid from 'nanoid'
 import { RootState } from 'store'
 
-export type TodoItem = {
-  title: string
+export type Todo = {
   id: string
-  completed: boolean
+  desc: string
+  isCompleted: boolean
 }
 
-export type TodoState = {
-  todos: TodoItem[]
-}
-
-const initialState: TodoState = {
-  todos: [],
-}
+const initialState: Todo[] = [
+  {
+    id: nanoid(),
+    desc: 'My first todo',
+    isCompleted: false,
+  },
+  {
+    id: nanoid(),
+    desc: 'Create slices',
+    isCompleted: false,
+  },
+  {
+    id: nanoid(),
+    desc: 'Love Redux-ToolKit',
+    isCompleted: false,
+  },
+]
 
 const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: state => {
-      console.log('todos add')
+    edit: (state, { payload }: PayloadAction<Omit<Todo, 'isCompleted'>>) => {
+      const todo = state.find(todo => todo.id === payload.id)
+
+      if (todo) {
+        todo.desc = payload.desc
+      }
     },
-    remove: state => {},
-    toggle: state => {},
+    toggle: (state, { payload }: PayloadAction<string>) => {
+      const todo = state.find(todo => todo.id === payload)
+
+      if (todo) {
+        todo.isCompleted = !todo.isCompleted
+      }
+    },
   },
 })
 
 // Exporting actions from counter slice
-export const { addTodo, remove, toggle } = todosSlice.actions
+export const { edit, toggle } = todosSlice.actions
 
 /**
  * Todos state selector

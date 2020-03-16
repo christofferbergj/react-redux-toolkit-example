@@ -1,19 +1,49 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { addTodo } from './todosSlice'
+import React, { FormEvent } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+// Todos slice
+import { selectTodos, toggle } from './todosSlice'
 
 // Components
-import { Todo } from './Todo'
-import { Button } from '@chakra-ui/core/dist'
+import { TodoItem } from './TodoItem'
+import { Button, Input, InputGroup, InputRightElement, List } from '@chakra-ui/core/dist'
 
 export const TodoList = () => {
-  const dispatch = useDispatch()
+  /**
+   * Todos selected from state
+   * @type {Todo[]}
+   */
+  const todos = useSelector(selectTodos)
+
+  const handleAddTodo = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    console.log('handleAddTodo')
+  }
 
   return (
     <>
-      <Todo title={'My first Todo'} id={'312312'} completed={false} />
+      <List
+        as={'ol'}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'start'}
+        styleType="decimal"
+        spacing={3}
+      >
+        {todos.map(({ id, desc, isCompleted }) => (
+          <TodoItem key={id} id={id} desc={desc} isCompleted={isCompleted} />
+        ))}
+      </List>
 
-      <Button onClick={() => dispatch(addTodo())}>Add todo!</Button>
+      <InputGroup size="md" mt={8}>
+        <Input pr="4.5rem" placeholder="Add new todo" />
+        <InputRightElement width="4.5rem">
+          <Button type={'submit'} h="1.75rem" size="sm" onClick={handleAddTodo}>
+            Add
+          </Button>
+        </InputRightElement>
+      </InputGroup>
     </>
   )
 }
