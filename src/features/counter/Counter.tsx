@@ -58,7 +58,7 @@ export const Counter = () => {
     <>
       <Stack spacing={4}>
         <Stack isInline spacing={4} align={'center'}>
-          <Button isDisabled={isLoading} onClick={() => count > 0 && dispatch(decrement())}>
+          <Button isDisabled={isLoading} onClick={() => !!count && dispatch(decrement())}>
             -
           </Button>
 
@@ -81,7 +81,7 @@ export const Counter = () => {
               Increment async
             </Button>
 
-            <Button onClick={() => dispatch(reset())} size={'sm'}>
+            <Button onClick={() => !!count && dispatch(reset())} size={'sm'}>
               Reset
             </Button>
           </Stack>
