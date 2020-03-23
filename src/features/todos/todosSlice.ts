@@ -4,24 +4,24 @@ import { RootState } from 'store'
 
 export type Todo = {
   id: string
-  desc: string
+  description: string
   isCompleted: boolean
 }
 
 const initialState: Todo[] = [
   {
     id: nanoid(),
-    desc: 'My first todo',
+    description: 'My first todo',
     isCompleted: false,
   },
   {
     id: nanoid(),
-    desc: 'Create slices',
+    description: 'Create slices',
     isCompleted: false,
   },
   {
     id: nanoid(),
-    desc: 'Love Redux-ToolKit',
+    description: 'Love Redux-ToolKit',
     isCompleted: false,
   },
 ]
@@ -30,25 +30,34 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    edit: (state, { payload }: PayloadAction<Omit<Todo, 'isCompleted'>>) => {
-      const todo = state.find(todo => todo.id === payload.id)
+    create: {
+      reducer: (state, action: PayloadAction<Todo>) => {
+        state.push(action.payload)
+      },
+      prepare: (payload: Todo['description']): { payload: Todo } => ({
+        payload: {
+          id: nanoid(),
+          description: payload,
+          isCompleted: false,
+        },
+      }),
+    },
+    toggle: (state, action: PayloadAction<Pick<Todo, 'id' | 'isCompleted'>>) => {
+      const { id, isCompleted } = action.payload
+      const todo = state.find(todo => todo.id === id)
 
       if (todo) {
-        todo.desc = payload.desc
+        todo.isCompleted = !isCompleted
       }
     },
-    toggle: (state, { payload }: PayloadAction<string>) => {
-      const todo = state.find(todo => todo.id === payload)
-
-      if (todo) {
-        todo.isCompleted = !todo.isCompleted
-      }
+    remove: (state, action: PayloadAction<Todo['id']>) => {
+      return state.filter(todo => todo.id !== action.payload)
     },
   },
 })
 
 // Exporting actions from counter slice
-export const { edit, toggle } = todosSlice.actions
+export const { create, toggle, remove } = todosSlice.actions
 
 /**
  * Todos state selector

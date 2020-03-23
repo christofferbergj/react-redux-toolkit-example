@@ -1,35 +1,47 @@
-import React, { useState } from 'react'
-import { Todo, toggle } from './todosSlice'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+
+// Slice
+import { Todo, toggle, remove } from './todosSlice'
 
 // Components
-import { BoxProps, ListItem } from '@chakra-ui/core/dist'
-import { useDispatch } from 'react-redux'
+import { BoxProps, Button, Checkbox, ListItem } from '@chakra-ui/core/dist'
 
 type Props = Todo & BoxProps
 
-export const TodoItem = ({ desc, id, isCompleted, ...rest }: Props) => {
+export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
   const dispatch = useDispatch()
-  const [isChecked, setIsChecked] = useState(isCompleted)
 
-  const handleChange = (id: string) => {
-    setIsChecked(!isChecked)
-    dispatch(toggle(id))
+  const handleToggleTodo = (id: string): void => {
+    if (!id) return
+
+    dispatch(toggle({ id, isCompleted }))
+  }
+
+  const handleRemoveTodo = (id: string): void => {
+    if (!id) return
+
+    dispatch(remove(id))
   }
 
   return (
     <>
       <ListItem
-        onChange={() => handleChange(id)}
-        ml={3}
+        width={'full'}
+        alignItems={'center'}
+        display={'flex'}
         fontSize={'lg'}
         fontWeight={'medium'}
-        _hover={{ color: 'purple.600', cursor: 'pointer' }}
-        _focus={{ color: 'purple.500', shadow: 'outline', outline: 'none' }}
         transition={'all 250ms'}
-        tabIndex={0}
         {...rest}
       >
-        {desc}
+        <Checkbox onChange={() => handleToggleTodo(id)} variantColor={'purple'} size={'lg'} mr={3}>
+          {description}
+        </Checkbox>
+
+        <Button onClick={() => handleRemoveTodo(id)} size={'xs'} ml={'auto'}>
+          Delete
+        </Button>
       </ListItem>
     </>
   )
