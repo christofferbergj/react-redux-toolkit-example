@@ -86,7 +86,13 @@ export const Counter = () => {
             </Button>
           </Stack>
 
-          <Slider value={incrementAmount} max={20} onChange={handleSliderChange} flex={1}>
+          <Slider
+            color={'purple'}
+            value={incrementAmount}
+            max={20}
+            onChange={handleSliderChange}
+            flex={1}
+          >
             <SliderTrack />
             <SliderFilledTrack />
             <SliderThumb
