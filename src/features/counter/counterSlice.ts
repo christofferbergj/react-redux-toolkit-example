@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { RootState } from 'app/rootReducer'
 import { AppThunk } from 'app/store'
+
 import { mock } from 'utilities/mock'
 
 type CounterState = {
@@ -64,4 +66,6 @@ export const selectCount = (state: RootState) => state.counter.value
  * Counter reducer
  * @type {Reducer<CounterState>}
  */
+
 export default counterSlice.reducer
+
