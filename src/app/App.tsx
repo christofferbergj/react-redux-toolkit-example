@@ -6,11 +6,9 @@ import { TodoList } from 'features/todos'
 
 // Components
 import { Heading, Stack } from '@chakra-ui/core/dist'
-import { Inner } from 'components/Inner'
-import { AppLayout } from 'components/AppLayout'
-import { ElevatedBox } from 'components/ElevatedBox'
+import { AppLayout, ElevatedBox, Inner } from 'components'
 
-export const App = () => {
+const App = () => {
   return (
     <AppLayout py={10}>
       <Stack spacing={8}>
@@ -35,3 +33,5 @@ export const App = () => {
     </AppLayout>
   )
 }
+
+export default App

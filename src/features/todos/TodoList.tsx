@@ -1,53 +1,62 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Todos slice
-import { selectTodos, create } from './todosSlice'
+import {
+  addTodo,
+  selectActiveTodosCount,
+  selectCompleteTodosCount,
+  selectTodosCount,
+} from './todosSlice'
+
+// Filters slice
+import { selectVisibleTodos, VisibilityFilters } from 'features/visibilityFilter/filtersSlice'
 
 // Components
 import { TodoItem } from './TodoItem'
+import { FilterButton } from 'features/visibilityFilter'
 import {
   Button,
+  Divider,
   FormControl,
   Input,
   InputGroup,
   InputRightElement,
   List,
+  Stack,
 } from '@chakra-ui/core/dist'
 
 export const TodoList = () => {
   const dispatch = useDispatch()
   const [todoDescription, setTodoDescription] = useState<string>('')
 
-  /**
-   * Todos selected from state
-   * @type {Todo[]}
-   */
-  const todos = useSelector(selectTodos)
+  // State selectors
+  const todos = useSelector(selectVisibleTodos)
+  const todosCount = useSelector(selectTodosCount)
+  const completeTodosCount = useSelector(selectCompleteTodosCount)
+  const activeTodosCount = useSelector(selectActiveTodosCount)
+
+  const inputRef = useRef<HTMLDivElement | any>()
 
   const handleAddTodo = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     if (!todoDescription) return
 
-    dispatch(create(todoDescription))
+    dispatch(addTodo(todoDescription))
     setTodoDescription('')
   }
 
   return (
     <>
-      {todos.length > 0 && (
-        <List as={'ul'} display={'flex'} flexDirection={'column'} alignItems={'start'} spacing={2}>
-          {todos.map(({ id, description, isCompleted }) => (
-            <TodoItem key={id} id={id} description={description} isCompleted={isCompleted} />
-          ))}
-        </List>
-      )}
-
       <FormControl as="form" onSubmit={handleAddTodo}>
-        <InputGroup size={'lg'} mt={8}>
+        <InputGroup size={'lg'} mt={5}>
           <Input
-            focusBorderColor={'purple.500'}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setTodoDescription(e.target.value)}
+            ref={inputRef}
+            onChange={({ currentTarget }: ChangeEvent<HTMLInputElement>) =>
+              setTodoDescription(currentTarget.value)
+            }
+            _focus={{ shadow: 'outline', borderColor: 'transparent' }}
+            focusBorderColor={'none'}
             placeholder="What needs to be done?"
             pr="4.5rem"
             type="text"
@@ -66,6 +75,41 @@ export const TodoList = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
+
+      {todos.length > 0 && (
+        <List
+          as={'ul'}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'start'}
+          spacing={2}
+          mt={8}
+        >
+          {todos.map(({ id, description, isCompleted }) => (
+            <TodoItem key={id} id={id} description={description} isCompleted={isCompleted} />
+          ))}
+        </List>
+      )}
+
+      <Divider mt={5} mb={3} />
+
+      <Stack isInline spacing={2} justify={'flex-end'}>
+        <FilterButton filter={VisibilityFilters.SHOW_ALL} count={todosCount}>
+          All
+        </FilterButton>
+
+        <FilterButton filter={VisibilityFilters.SHOW_ACTIVE} count={activeTodosCount}>
+          Active
+        </FilterButton>
+
+        <FilterButton
+          filter={VisibilityFilters.SHOW_COMPLETED}
+          count={completeTodosCount}
+          isDisabled={!completeTodosCount}
+        >
+          Completed
+        </FilterButton>
+      </Stack>
     </>
   )
 }

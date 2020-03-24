@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import nanoid from 'nanoid'
-import { RootState } from 'store'
+import { RootState } from 'app/rootReducer'
 
 export type Todo = {
   id: string
@@ -30,7 +30,7 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    create: {
+    addTodo: {
       reducer: (state, action: PayloadAction<Todo>) => {
         state.push(action.payload)
       },
@@ -42,28 +42,37 @@ const todosSlice = createSlice({
         },
       }),
     },
-    toggle: (state, action: PayloadAction<Pick<Todo, 'id' | 'isCompleted'>>) => {
+    toggleTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'isCompleted'>>) => {
       const { id, isCompleted } = action.payload
-      const todo = state.find(todo => todo.id === id)
+      const todo = state.find((todo) => todo.id === id)
 
-      if (todo) {
-        todo.isCompleted = !isCompleted
-      }
+      if (todo) todo.isCompleted = !isCompleted
     },
-    remove: (state, action: PayloadAction<Todo['id']>) => {
-      return state.filter(todo => todo.id !== action.payload)
+    deleteTodo: (state, action: PayloadAction<Todo['id']>) => {
+      return state.filter((todo) => todo.id !== action.payload)
+    },
+    editTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'description'>>) => {
+      const { id, description } = action.payload
+      const todo = state.find((todo) => todo.id === id)
+
+      if (todo) todo.description = description
     },
   },
 })
 
-// Exporting actions from counter slice
-export const { create, toggle, remove } = todosSlice.actions
+// Slice actions
+export const { addTodo, toggleTodo, deleteTodo, editTodo } = todosSlice.actions
 
-/**
- * Todos state selector
- * @param {RootState} state
- * @returns {TodoState}
- */
+// Selectors
 export const selectTodos = (state: RootState) => state.todos
+export const selectTodosCount = createSelector(selectTodos, (todos) => todos.length)
+export const selectActiveTodosCount = createSelector(
+  selectTodos,
+  (todos) => todos.filter((todo) => !todo.isCompleted).length
+)
+export const selectCompleteTodosCount = createSelector(
+  selectTodos,
+  (todos) => todos.filter((todo) => todo.isCompleted).length
+)
 
-export const todosReducer = todosSlice.reducer
+export default todosSlice.reducer

@@ -22,6 +22,7 @@
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.0",
+    "react-use": "^13.27.0",
     "typescript": "~3.8.2"
   },
   "scripts": {
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@types/webpack-env": "^1.15.1",
     "husky": "^4.2.3",
     "npm-run-all": "^4.1.5",
     "precise-commits": "^1.0.2",
