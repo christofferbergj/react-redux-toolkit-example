@@ -10,7 +10,7 @@ export enum VisibilityFilters {
   SHOW_ACTIVE = 'SHOW_ACTIVE',
 }
 
-const filtersSlice = createSlice({
+export const filtersSlice = createSlice({
   name: 'visibilityFilter',
   initialState: VisibilityFilters.SHOW_ALL,
   reducers: {

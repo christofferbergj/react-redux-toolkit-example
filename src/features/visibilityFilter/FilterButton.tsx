@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Filters slice
@@ -18,13 +18,13 @@ type Props = {
   filter: VisibilityFilters
 } & ButtonProps
 
-export const FilterButton = ({ filter, children, ...rest }: Props) => {
+export const FilterButton = memo(({ filter, children, ...rest }: Props) => {
   const dispatch = useDispatch()
 
   const todosCount = useSelector(selectTodosCount)
   const activeTodosCount = useSelector(selectActiveTodosCount)
   const completeTodosCount = useSelector(selectCompleteTodosCount)
-  const activeFilter = useSelector(selectFilter)
+  const visibilityFilter = useSelector(selectFilter)
 
   const activeProps = {
     bg: 'purple.500',
@@ -50,7 +50,7 @@ export const FilterButton = ({ filter, children, ...rest }: Props) => {
       case VisibilityFilters.SHOW_ALL:
         return {
           onClick:
-            filter !== activeFilter
+            filter !== visibilityFilter
               ? () => dispatch(setFilter(VisibilityFilters.SHOW_ALL))
               : undefined,
           'aria-label': 'Filter todos',
@@ -60,7 +60,7 @@ export const FilterButton = ({ filter, children, ...rest }: Props) => {
       case VisibilityFilters.SHOW_ACTIVE:
         return {
           onClick:
-            filter !== activeFilter
+            filter !== visibilityFilter
               ? () => dispatch(setFilter(VisibilityFilters.SHOW_ACTIVE))
               : undefined,
           isDisabled: !activeTodosCount,
@@ -69,7 +69,7 @@ export const FilterButton = ({ filter, children, ...rest }: Props) => {
       case VisibilityFilters.SHOW_COMPLETED:
         return {
           onClick:
-            filter !== activeFilter
+            filter !== visibilityFilter
               ? () => dispatch(setFilter(VisibilityFilters.SHOW_COMPLETED))
               : undefined,
           isDisabled: !completeTodosCount,
@@ -81,7 +81,7 @@ export const FilterButton = ({ filter, children, ...rest }: Props) => {
   }
 
   const getActiveProps = (filter: VisibilityFilters) => {
-    return filter === activeFilter ? { ...activeProps } : null
+    return filter === visibilityFilter ? { ...activeProps } : null
   }
 
   return (
@@ -98,4 +98,4 @@ export const FilterButton = ({ filter, children, ...rest }: Props) => {
       </Button>
     </>
   )
-}
+})

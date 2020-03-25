@@ -1,11 +1,21 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Todos slice
-import { addTodo, deleteCompleted, selectCompleteTodosCount } from './todosSlice'
+import {
+  addTodo,
+  deleteCompleted,
+  selectActiveTodosCount,
+  selectCompleteTodosCount,
+} from './todosSlice'
 
 // Filters slice
-import { selectVisibleTodos, VisibilityFilters } from 'features/visibilityFilter/filtersSlice'
+import {
+  selectVisibleTodos,
+  VisibilityFilters,
+  setFilter,
+  selectFilter,
+} from 'features/visibilityFilter/filtersSlice'
 
 // Components
 import { TodoItem } from './TodoItem'
@@ -28,10 +38,27 @@ export const TodoList = () => {
 
   // State selector
   const todos = useSelector(selectVisibleTodos)
+  const activeTodosCount = useSelector(selectActiveTodosCount)
   const completeTodosCount = useSelector(selectCompleteTodosCount)
+  const visibilityFilter = useSelector(selectFilter)
 
-  const handleAddTodo = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
+  // Change filter depending on number of items in respective filter
+  useEffect(() => {
+    if (visibilityFilter === VisibilityFilters.SHOW_ACTIVE && !activeTodosCount) {
+      dispatch(setFilter(VisibilityFilters.SHOW_COMPLETED))
+    }
+
+    if (visibilityFilter === VisibilityFilters.SHOW_COMPLETED && !completeTodosCount) {
+      dispatch(setFilter(VisibilityFilters.SHOW_ALL))
+    }
+  }, [activeTodosCount, completeTodosCount, dispatch, visibilityFilter])
+
+  /**
+   * Handles adding a todo
+   * @param {React.ChangeEvent<HTMLInputElement>} event
+   */
+  const handleAddTodo = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
     if (!todoDescription.trim()) return
 
     dispatch(addTodo(todoDescription))

@@ -1,5 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import nanoid from 'nanoid'
+
+// Root state type
 import { RootState } from 'app/rootReducer'
 
 export type Todo = {
@@ -26,7 +28,7 @@ const initialState: Todo[] = [
   },
 ]
 
-const todosSlice = createSlice({
+export const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
@@ -63,10 +65,10 @@ const todosSlice = createSlice({
   },
 })
 
-// Slice actions
+// Action creators
 export const { addTodo, toggleTodo, deleteTodo, deleteCompleted, editTodo } = todosSlice.actions
 
-// Selectors
+// State selectors
 export const selectTodos = (state: RootState) => state.todos
 export const selectTodosCount = createSelector(selectTodos, (todos) => todos.length)
 export const selectActiveTodosCount = createSelector(

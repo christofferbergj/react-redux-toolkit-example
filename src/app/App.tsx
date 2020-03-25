@@ -3,6 +3,7 @@ import React from 'react'
 // Features
 import { Counter } from 'features/counter'
 import { TodoList } from 'features/todos'
+import { ActionCounter } from 'features/actionCounter'
 
 // Components
 import { Heading, Stack } from '@chakra-ui/core/dist'
@@ -12,6 +13,10 @@ const App = () => {
   return (
     <AppLayout py={10}>
       <Stack spacing={8}>
+        <Inner>
+          <ActionCounter />
+        </Inner>
+
         <Inner>
           <ElevatedBox>
             <Heading mb={8} fontSize={'xl'}>
