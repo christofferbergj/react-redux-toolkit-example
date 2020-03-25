@@ -57,11 +57,14 @@ const todosSlice = createSlice({
 
       if (todo) todo.description = description
     },
+    deleteCompleted: (state) => {
+      return state.filter((todo) => !todo.isCompleted)
+    },
   },
 })
 
 // Slice actions
-export const { addTodo, toggleTodo, deleteTodo, editTodo } = todosSlice.actions
+export const { addTodo, toggleTodo, deleteTodo, deleteCompleted, editTodo } = todosSlice.actions
 
 // Selectors
 export const selectTodos = (state: RootState) => state.todos

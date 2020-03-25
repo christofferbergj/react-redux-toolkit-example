@@ -13,6 +13,7 @@ import {
 // Components
 import {
   Button,
+  Flex,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -56,7 +57,7 @@ export const Counter = () => {
 
   return (
     <>
-      <Stack spacing={4}>
+      <Stack spacing={{ base: 6, md: 4 }}>
         <Stack isInline spacing={4} align={'center'}>
           <Button isDisabled={isLoading} onClick={() => !!count && dispatch(decrement())}>
             -
@@ -71,7 +72,7 @@ export const Counter = () => {
           </Button>
         </Stack>
 
-        <Stack isInline spacing={4}>
+        <Flex direction={{ base: 'column', md: 'row' }}>
           <Stack isInline spacing={2}>
             <Button onClick={() => dispatch(incrementByAmount(incrementAmount))} size={'sm'}>
               Increment
@@ -92,6 +93,8 @@ export const Counter = () => {
             max={20}
             onChange={handleSliderChange}
             flex={1}
+            mt={{ base: 6, md: 0 }}
+            ml={{ md: 4 }}
           >
             <SliderTrack />
             <SliderFilledTrack />
@@ -103,7 +106,7 @@ export const Counter = () => {
               children={incrementAmount}
             />
           </Slider>
-        </Stack>
+        </Flex>
       </Stack>
     </>
   )

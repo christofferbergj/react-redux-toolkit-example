@@ -1,13 +1,8 @@
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Todos slice
-import {
-  addTodo,
-  selectActiveTodosCount,
-  selectCompleteTodosCount,
-  selectTodosCount,
-} from './todosSlice'
+import { addTodo, deleteCompleted, selectCompleteTodosCount } from './todosSlice'
 
 // Filters slice
 import { selectVisibleTodos, VisibilityFilters } from 'features/visibilityFilter/filtersSlice'
@@ -18,6 +13,7 @@ import { FilterButton } from 'features/visibilityFilter'
 import {
   Button,
   Divider,
+  Flex,
   FormControl,
   Input,
   InputGroup,
@@ -30,13 +26,9 @@ export const TodoList = () => {
   const dispatch = useDispatch()
   const [todoDescription, setTodoDescription] = useState<string>('')
 
-  // State selectors
+  // State selector
   const todos = useSelector(selectVisibleTodos)
-  const todosCount = useSelector(selectTodosCount)
   const completeTodosCount = useSelector(selectCompleteTodosCount)
-  const activeTodosCount = useSelector(selectActiveTodosCount)
-
-  const inputRef = useRef<HTMLDivElement | any>()
 
   const handleAddTodo = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -51,7 +43,6 @@ export const TodoList = () => {
       <FormControl as="form" onSubmit={handleAddTodo}>
         <InputGroup size={'lg'} mt={5}>
           <Input
-            ref={inputRef}
             onChange={({ currentTarget }: ChangeEvent<HTMLInputElement>) =>
               setTodoDescription(currentTarget.value)
             }
@@ -93,23 +84,24 @@ export const TodoList = () => {
 
       <Divider mt={5} mb={3} />
 
-      <Stack isInline spacing={2} justify={'flex-end'}>
-        <FilterButton filter={VisibilityFilters.SHOW_ALL} count={todosCount}>
-          All
-        </FilterButton>
+      <Flex align={'center'} width={'full'}>
+        {!!completeTodosCount && (
+          <Button
+            onClick={() => dispatch(deleteCompleted())}
+            variant={'link'}
+            size={'xs'}
+            leftIcon={'delete'}
+          >
+            Clear completed
+          </Button>
+        )}
 
-        <FilterButton filter={VisibilityFilters.SHOW_ACTIVE} count={activeTodosCount}>
-          Active
-        </FilterButton>
-
-        <FilterButton
-          filter={VisibilityFilters.SHOW_COMPLETED}
-          count={completeTodosCount}
-          isDisabled={!completeTodosCount}
-        >
-          Completed
-        </FilterButton>
-      </Stack>
+        <Stack isInline spacing={2} ml={'auto'}>
+          <FilterButton filter={VisibilityFilters.SHOW_ALL}>All</FilterButton>
+          <FilterButton filter={VisibilityFilters.SHOW_ACTIVE}>Active</FilterButton>
+          <FilterButton filter={VisibilityFilters.SHOW_COMPLETED}>Completed</FilterButton>
+        </Stack>
+      </Flex>
     </>
   )
 }
