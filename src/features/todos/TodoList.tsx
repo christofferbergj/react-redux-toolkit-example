@@ -32,7 +32,7 @@ export const TodoList = () => {
 
   const handleAddTodo = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    if (!todoDescription) return
+    if (!todoDescription.trim()) return
 
     dispatch(addTodo(todoDescription))
     setTodoDescription('')
