@@ -20,11 +20,6 @@ import {
   useClipboard,
 } from '@chakra-ui/core/dist'
 
-const tooltipProps = {
-  showDelay: 300,
-  fontSize: 'xs',
-}
-
 // Components prop types
 type Props = Todo & BoxProps
 
@@ -79,7 +74,7 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
                   aria-label={copyDescriptionLabel}
                   label={copyDescriptionLabel}
                   placement="bottom"
-                  {...tooltipProps}
+                  fontSize="xs"
                 >
                   <IconButton
                     onClick={onCopy}
@@ -93,10 +88,9 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
               <Box>
                 <Tooltip
                   aria-label={'Delete todo'}
-                  closeOnClick
                   label={'Delete todo'}
                   placement="bottom"
-                  {...tooltipProps}
+                  fontSize="xs"
                 >
                   <IconButton
                     onClick={() => dispatch(deleteTodo(id))}

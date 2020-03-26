@@ -20,7 +20,7 @@ export const filtersSlice = createSlice({
   },
 })
 
-// Slice actions
+// Slice action creators
 export const { setFilter } = filtersSlice.actions
 
 // Selectors

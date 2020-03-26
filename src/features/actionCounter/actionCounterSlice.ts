@@ -32,6 +32,6 @@ const actionCounterSlice = createSlice({
 })
 
 // State selector
-export const actionCounterSelector = (state: RootState) => state.actionsCounter
+export const actionCounterSelector = (state: RootState) => state.actionCounter
 
 export default actionCounterSlice.reducer

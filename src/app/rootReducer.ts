@@ -9,7 +9,7 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   todos: todosReducer,
   visibilityFilter: visibilityFilterReducer,
-  actionsCounter: actionsCounterReducer,
+  actionCounter: actionsCounterReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
