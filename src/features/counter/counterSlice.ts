@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 import { RootState } from 'app/rootReducer'
 import { AppThunk } from 'app/store'
 
+// Utils
 import { mock } from 'utilities/mock'
 
+// Types
 type CounterState = number
 
 const initialState: CounterState = 0

@@ -31,6 +31,7 @@ import {
   List,
   Stack,
 } from '@chakra-ui/core/dist'
+import { createToast } from '../toasts/toastSlice'
 
 export const TodoList = () => {
   const dispatch = useDispatch()
@@ -129,6 +130,10 @@ export const TodoList = () => {
           <FilterButton filter={VisibilityFilters.SHOW_COMPLETED}>Completed</FilterButton>
         </Stack>
       </Flex>
+
+      <Button onClick={() => dispatch(createToast({ title: 'New toast', duration: 1000 }))} mt={5}>
+        Create toast
+      </Button>
     </>
   )
 }

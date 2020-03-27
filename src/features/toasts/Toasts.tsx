@@ -1,26 +1,22 @@
-import React, { memo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 // Toast slice
-import { selectToasts, removeToast, Toast } from './toastSlice'
+import { selectToasts } from './toastSlice'
 
 // Components
-import { useToast } from '@chakra-ui/core/dist'
+import { Alert, AlertTitle } from '@chakra-ui/core/dist'
 
-export const Toasts = memo(() => {
-  const dispatch = useDispatch()
-  const createToast = useToast()
+export const Toasts = () => {
   const toasts = useSelector(selectToasts)
-  const latestToast = toasts.slice(-1)
 
-  console.log('toasts', toasts)
-  console.log('latestToast', latestToast)
-
-  const handleToast = (toast: Toast) => {
-    createToast(toast)
-
-    setTimeout(() => dispatch(removeToast(toast.id)), toast.duration)
+  const renderToasts = () => {
+    return toasts.map((toast) => (
+      <Alert key={toast.id} position={'absolute'}>
+        <AlertTitle>{toast.title}</AlertTitle>
+      </Alert>
+    ))
   }
 
-  return <>{latestToast.length > 0 && latestToast.map((toast: Toast) => handleToast(toast))}</>
-})
+  return <>{renderToasts()}</>
+}
