@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Todos slice
 import {
-  addTodo,
+  addTodoAsync,
   deleteCompleted,
   selectActiveTodosCount,
   selectCompleteTodosCount,
@@ -61,7 +61,7 @@ export const TodoList = () => {
     event.preventDefault()
     if (!todoDescription.trim()) return
 
-    dispatch(addTodo(todoDescription))
+    dispatch(addTodoAsync(todoDescription))
     setTodoDescription('')
   }
 
