@@ -33,8 +33,7 @@ export const Toasts = () => {
   const toasts = useSelector(selectToasts)
 
   const leave = () => async (next: Function) => {
-    await next({ opacity: 0 })
-    await next({ height: 0 }, true)
+    await next({ opacity: 0, height: 0 })
   }
 
   const styles = {
@@ -75,13 +74,13 @@ export const Toasts = () => {
         <Transition
           items={toasts}
           keys={(item) => item.id}
-          from={{ opacity: 0, height: 0, life: 1 }}
-          enter={{ opacity: 1, height: 'auto' }}
+          from={{ opacity: 0, height: 0, transform: 'scale(0.9)' }}
+          enter={{ opacity: 1, height: 'auto', transform: 'scale(1)' }}
           leave={leave}
           // @ts-ignore
           config={spring}
         >
-          {(item) => ({ life, ...props }) => (
+          {(item) => (props) => (
             <AnimatedDiv style={props}>
               <Box
                 pos={'relative'}
