@@ -11,9 +11,6 @@ import { theme } from './theme'
 // Chakra
 import { ThemeProvider, CSSReset } from '@chakra-ui/core/dist'
 
-// Components
-import { Toasts } from './features/toasts/Toasts'
-
 const render = () => {
   const App = require('./app').default
 
@@ -21,7 +18,6 @@ const render = () => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CSSReset />
-        <Toasts />
         <App />
       </ThemeProvider>
     </Provider>,
