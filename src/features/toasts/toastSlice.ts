@@ -7,8 +7,8 @@ export type Toast = {
   id: string
   title: string
   description?: string
-  status?: 'error' | 'success' | 'warning'
-  duration?: number
+  type?: 'error' | 'success' | 'warning'
+  duration?: number | null
   isClosable?: boolean
 }
 
@@ -18,36 +18,38 @@ const toastsSlice = createSlice({
   name: 'toasts',
   initialState,
   reducers: {
-    addToast: (state, action: PayloadAction<Toast>) => {
-      state.push(action.payload)
+    addToast: (state, { payload }: PayloadAction<Toast>) => {
+      state.push(payload)
     },
-    removeToast: (state, action: PayloadAction<Toast['id']>) => {
-      return state.filter((toast) => toast.id !== action.payload)
+    clearToast: (state, { payload }: PayloadAction<Toast['id']>) => {
+      state.splice(
+        state.findIndex((toast) => toast.id === payload),
+        1
+      )
     },
   },
 })
 
 export const createToast = (toast: Omit<Toast, 'id'>): AppThunk => (dispatch) => {
-  console.log('createToast')
   const id = nanoid()
-  const { description, duration = 4000, isClosable = true, status = 'success', title } = toast
+  const { description, duration = 5000, isClosable = false, type = 'success', title } = toast
 
   dispatch(
     addToast({
       id,
       title,
-      status,
+      type: type,
       description,
       duration,
       isClosable,
     })
   )
 
-  setTimeout(() => dispatch(removeToast(id)), duration)
+  duration && setTimeout(() => dispatch(clearToast(id)), duration)
 }
 
 // Slice actions
-export const { addToast, removeToast } = toastsSlice.actions
+export const { addToast, clearToast } = toastsSlice.actions
 
 // State selectors
 export const selectToasts = createSelector(

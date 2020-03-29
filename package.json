@@ -22,6 +22,7 @@
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.0",
+    "react-spring": "^8.0.27",
     "react-use": "^13.27.0",
     "typescript": "~3.8.2"
   },

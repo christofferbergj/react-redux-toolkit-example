@@ -75,7 +75,15 @@ export const addTodoAsync = (payload: Todo['description']): AppThunk => async (d
   try {
     await mockAddTodo(todo, 500)
   } catch (err) {
-    dispatch(createToast({ title: 'This is a toast', duration: 1500 }))
+    dispatch(
+      createToast({
+        title: 'Error occurred',
+        description: 'We could not add your todo',
+        type: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    )
     dispatch(deleteTodo(err.todoId))
   }
 }

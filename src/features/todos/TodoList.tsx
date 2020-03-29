@@ -131,7 +131,19 @@ export const TodoList = () => {
         </Stack>
       </Flex>
 
-      <Button onClick={() => dispatch(createToast({ title: 'New toast', duration: 1000 }))} mt={5}>
+      <Button
+        onClick={() =>
+          dispatch(
+            createToast({
+              title: 'A new toast',
+              description: 'Hello world and Sahara',
+              duration: 9000,
+              isClosable: true,
+            })
+          )
+        }
+        mt={5}
+      >
         Create toast
       </Button>
     </>
