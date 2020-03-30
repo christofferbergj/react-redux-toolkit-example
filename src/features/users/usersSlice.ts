@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
-// Slices
 
 export type User = {
   id: number
