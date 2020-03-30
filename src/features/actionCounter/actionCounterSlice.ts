@@ -8,7 +8,7 @@ import { filtersSlice } from 'features/visibilityFilter/filtersSlice'
 // Root state type
 import { RootState } from 'app/rootReducer'
 
-// Action creators
+// ActionType creators
 const { addTodo, deleteCompleted, editTodo, deleteTodo, toggleTodo } = todosSlice.actions
 const { reset, incrementByAmount, decrement, increment } = counterSlice.actions
 const { setFilter } = filtersSlice.actions

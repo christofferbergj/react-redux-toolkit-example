@@ -5,6 +5,9 @@ import { AppThunk } from 'app/store'
 // Utils
 import { mock } from 'utilities/mock'
 
+// Actions
+import { startAction, stopAction } from 'features/ui/uiSlice'
+
 // Types
 type CounterState = number
 
@@ -27,16 +30,21 @@ export const { increment, decrement, incrementByAmount, reset } = counterSlice.a
 /**
  * Asynchronously increment the counter state
  * @example
- *  dispatch(incrementAsync(10))
- * @param {number} amount
+ *  dispatch(incrementByAmountAsync(10))
  * @returns {AppThunk}
+ * @param payload
  */
-export const incrementAsync = (amount: number): AppThunk => async (dispatch) => {
+export const incrementByAmountAsync = (payload: number): AppThunk => async (dispatch) => {
+  const { type } = incrementByAmount
+
   try {
+    dispatch(startAction(type))
     await mock()
-    dispatch(incrementByAmount(amount))
+    dispatch(incrementByAmount(payload))
   } catch (err) {
     console.log(err)
+  } finally {
+    dispatch(stopAction(type))
   }
 }
 

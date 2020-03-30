@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+// Hooks and utils
+import { useActionInProgress } from 'hooks/useActionInProgress'
+
 import {
   decrement,
   increment,
-  incrementAsync,
+  incrementByAmountAsync,
   incrementByAmount,
   reset,
   selectCount,
@@ -25,35 +28,19 @@ import {
 export const Counter = () => {
   // State selectors
   const count = useSelector(selectCount)
+  const isLoading = useActionInProgress(incrementByAmount.type)
 
   // Redux dispatch
   const dispatch = useDispatch()
 
   // Local state
   const [incrementAmount, setIncrementAmount] = useState<number>(4)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   /**
    * Handle slider change event
    * @param {number} value
    */
   const handleSliderChange = (value: number) => setIncrementAmount(value)
-
-  /**
-   * Handle increment async
-   * @returns {Promise<void>}
-   */
-  const handleIncrementAsync = async () => {
-    setIsLoading(true)
-
-    try {
-      await dispatch(incrementAsync(incrementAmount))
-    } catch (err) {
-      console.log('Something happened: ', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <>
@@ -78,7 +65,11 @@ export const Counter = () => {
               Increment
             </Button>
 
-            <Button isLoading={isLoading} onClick={handleIncrementAsync} size={'sm'}>
+            <Button
+              isLoading={isLoading}
+              onClick={() => dispatch(incrementByAmountAsync(incrementAmount))}
+              size={'sm'}
+            >
               Increment async
             </Button>
 

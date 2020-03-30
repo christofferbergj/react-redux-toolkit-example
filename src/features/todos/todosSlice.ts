@@ -76,7 +76,7 @@ export const addTodoAsync = (payload: Todo['description']): AppThunk => async (d
   }
 }
 
-// Action creators
+// ActionType creators
 export const { addTodo, toggleTodo, deleteTodo, deleteCompleted, editTodo } = todosSlice.actions
 
 // State selectors

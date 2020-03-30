@@ -1,9 +1,10 @@
 import React from 'react'
 
 // Features
+import { ActionCounter } from 'features/actionCounter'
 import { Counter } from 'features/counter'
 import { TodoList } from 'features/todos'
-import { ActionCounter } from 'features/actionCounter'
+import { Users } from 'features/users/Users'
 
 // Components
 import { Heading, Stack } from '@chakra-ui/core/dist'
@@ -32,6 +33,15 @@ const App = () => {
               Todos example
             </Heading>
             <TodoList />
+          </ElevatedBox>
+        </Inner>
+
+        <Inner>
+          <ElevatedBox>
+            <Heading mb={8} fontSize={'xl'}>
+              Users example
+            </Heading>
+            <Users />
           </ElevatedBox>
         </Inner>
       </Stack>
