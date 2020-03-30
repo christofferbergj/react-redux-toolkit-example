@@ -35,6 +35,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "run-s precise-commits",
       "pre-push": "run-s build"
     }
   },
