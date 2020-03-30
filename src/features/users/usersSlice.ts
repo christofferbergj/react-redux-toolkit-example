@@ -34,7 +34,7 @@ const initialState: UsersState = {
 }
 
 export const fetchUsers = createAsyncThunk(
-  'users/fetchUsersStatus',
+  'users/fetchUsers',
   async (_arg, { getState, requestId }) => {
     // @ts-ignore
     const { currentRequestId, loading } = getState().users
