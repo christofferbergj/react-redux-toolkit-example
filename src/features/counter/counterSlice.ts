@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
 
 // Utils
-import { mockIncrement } from 'utilities/mockIncrement'
+import { mockIncrement } from 'utilities/mockAPI'
 
-// Actions
+// Async actions
 export const incrementByAmountAsync = createAsyncThunk(
-  'counter/incrementByAmountAsync',
+  'counter/incrementByAmount',
   async (payload: number, { rejectWithValue }) => {
     try {
       const response = await mockIncrement(payload)

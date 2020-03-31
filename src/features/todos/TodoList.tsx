@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Todos slice
 import {
-  addTodoAsync,
+  addTodoFirebase,
   deleteCompleted,
   selectActiveTodosCount,
   selectCompleteTodosCount,
+  selectTodos,
 } from './todosSlice'
 
 // Filters slice
@@ -30,9 +31,11 @@ import {
   InputRightElement,
   List,
   Stack,
+  useToast,
 } from '@chakra-ui/core/dist'
 
 export const TodoList = () => {
+  const toast = useToast()
   const dispatch = useDispatch()
   const [todoDescription, setTodoDescription] = useState<string>('')
 
@@ -41,6 +44,7 @@ export const TodoList = () => {
   const activeTodosCount = useSelector(selectActiveTodosCount)
   const completeTodosCount = useSelector(selectCompleteTodosCount)
   const visibilityFilter = useSelector(selectFilter)
+  const { error } = useSelector(selectTodos)
 
   // Change filter depending on number of items in respective filter
   useEffect(() => {
@@ -53,6 +57,16 @@ export const TodoList = () => {
     }
   }, [activeTodosCount, completeTodosCount, dispatch, visibilityFilter])
 
+  useEffect(() => {
+    error &&
+      toast({
+        title: 'Could not add todo',
+        description: error.message,
+        duration: 2000,
+        status: 'error',
+      })
+  }, [error, toast])
+
   /**
    * Handles adding a todo
    * @param {React.ChangeEvent<HTMLInputElement>} event
@@ -61,7 +75,7 @@ export const TodoList = () => {
     event.preventDefault()
     if (!todoDescription.trim()) return
 
-    dispatch(addTodoAsync(todoDescription))
+    dispatch(addTodoFirebase(todoDescription))
     setTodoDescription('')
   }
 

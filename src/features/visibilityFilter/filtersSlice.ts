@@ -28,13 +28,13 @@ export const selectFilter = (state: RootState) => state.visibilityFilter
 export const selectVisibleTodos = createSelector([selectTodos, selectFilter], (todos, filter) => {
   switch (filter) {
     case VisibilityFilters.SHOW_ALL:
-      return todos
+      return todos.entities
     case VisibilityFilters.SHOW_COMPLETED:
-      return todos.filter((todo) => todo.isCompleted)
+      return todos.entities.filter((todo) => todo.isCompleted)
     case VisibilityFilters.SHOW_ACTIVE:
-      return todos.filter((todo) => !todo.isCompleted)
+      return todos.entities.filter((todo) => !todo.isCompleted)
     default:
-      return todos
+      return todos.entities
   }
 })
 

@@ -4,22 +4,27 @@ import React from 'react'
 import { User as UserType } from './usersSlice'
 
 // Components
-import { Flex, Text } from '@chakra-ui/core/dist'
+import { Box, Flex, Text } from '@chakra-ui/core/dist'
 
 type Props = {
   user: UserType
 }
 
 export const User = ({ user }: Props) => {
-  const { email, id, name, username } = user
+  const { first, last, email, address, created } = user
 
   return (
     <>
-      <Flex>
-        <Text>User id: {id}</Text>
-        <Text>User name: {name}</Text>
-        <Text>User username: {username}</Text>
-        <Text>User email: {email}</Text>
+      <Flex direction={'column'} p={3} bg={'gray.50'}>
+        <Text fontWeight={'semibold'}>
+          {first} {last}
+        </Text>
+
+        <Box fontSize={'sm'}>
+          <Text>{email}</Text>
+          <Text>{address}</Text>
+          <Text>{created}</Text>
+        </Box>
       </Flex>
     </>
   )

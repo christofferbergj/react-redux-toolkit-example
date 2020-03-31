@@ -37,7 +37,7 @@ export const mockAddTodo = (payload: Todo, timeout: number = 1000) => {
     setTimeout(() => {
       randomInt > 3
         ? resolve('Mock API successfully added todo!')
-        : reject({ message: 'Mock API Error', todoId: payload.id })
+        : reject({ message: 'Mock API failed', id: payload.id })
     }, timeout)
   })
 }

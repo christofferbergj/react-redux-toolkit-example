@@ -1,21 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
 
+// Utils
+import { sleep } from 'utilities/sleep'
+
+const API_URL = 'https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole'
+
 export type User = {
-  id: number
-  name: string
-  username: string
+  first: string
+  last: string
   email: string
-  address: {
-    street: string
-    suite: string
-    city: string
-    zipcode: string
-    geo: {
-      lat: string
-      lng: string
-    }
-  }
+  address: string
+  created: string
+  balance: string
 }
 
 export const fetchUsers = createAsyncThunk(
@@ -28,8 +25,11 @@ export const fetchUsers = createAsyncThunk(
       return
     }
 
-    const response = await fetch('https://jsonplaceholder.typicode.com/users')
-    return await response.json()
+    const response = await fetch(API_URL)
+    const json = await response.json()
+    json.splice(10)
+    await sleep(1000)
+    return json
   }
 )
 

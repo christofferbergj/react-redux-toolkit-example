@@ -1,4 +1,8 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+
+// Slices
+import { fetchUsers } from 'features/users/usersSlice'
 
 // Features
 import { ActionCounter } from 'features/actionCounter'
@@ -7,10 +11,12 @@ import { TodoList } from 'features/todos'
 import { Users } from 'features/users/Users'
 
 // Components
-import { Heading, Stack } from '@chakra-ui/core/dist'
+import { Button, Flex, Heading, Stack } from '@chakra-ui/core/dist'
 import { AppLayout, ElevatedBox, Inner } from 'components'
 
 const App = () => {
+  const dispatch = useDispatch()
+
   return (
     <AppLayout py={10}>
       <Stack spacing={8}>
@@ -38,9 +44,14 @@ const App = () => {
 
         <Inner>
           <ElevatedBox>
-            <Heading mb={8} fontSize={'xl'}>
-              Users example
-            </Heading>
+            <Flex align={'center'} mb={8}>
+              <Heading fontSize={'xl'}>Users example</Heading>
+
+              <Button onClick={() => dispatch(fetchUsers())} size={'sm'} ml={'auto'}>
+                Fetch users
+              </Button>
+            </Flex>
+
             <Users />
           </ElevatedBox>
         </Inner>
