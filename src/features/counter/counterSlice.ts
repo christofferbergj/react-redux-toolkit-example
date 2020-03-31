@@ -8,9 +8,13 @@ import nanoid from 'nanoid'
 // Actions
 export const incrementByAmountAsync = createAsyncThunk(
   'counter/incrementByAmountAsync',
-  async (payload: number) => {
-    const response = await mockIncrement(payload)
-    return response.data
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const response = await mockIncrement(payload)
+      return response.data
+    } catch (err) {
+      return rejectWithValue({ message: err.message, id: nanoid() })
+    }
   }
 )
 
@@ -50,9 +54,9 @@ export const counterSlice = createSlice({
       state.loading = 'idle'
       state.value = state.value + payload
     },
-    [incrementByAmountAsync.rejected.type]: (state, { error }) => {
+    [incrementByAmountAsync.rejected.type]: (state, { payload }) => {
       state.loading = 'idle'
-      state.error = { error, id: nanoid() }
+      state.error = payload
     },
   },
 })

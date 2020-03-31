@@ -3,7 +3,6 @@ import { getRandomInt } from './getRandomInt'
 
 // Types
 import { Todo } from 'features/todos/todosSlice'
-import nanoid from 'nanoid'
 
 /**
  * Mock API call
@@ -16,9 +15,9 @@ export const mockIncrement = (payload: number, timeout: number = 1000) => {
 
   return new Promise<any>((resolve, reject) => {
     setTimeout(() => {
-      randomInt > 2
-        ? resolve({ message: 'Mock API success!', data: payload })
-        : reject({ message: 'Mock API Error', id: nanoid() })
+      randomInt > 3
+        ? resolve({ message: 'Mock increment API success!', data: payload })
+        : reject(new Error('Mock increment API error'))
     }, timeout)
   })
 }
@@ -34,7 +33,7 @@ export const mockAddTodo = (payload: Todo, timeout: number = 1000) => {
 
   return new Promise<string>((resolve, reject) => {
     setTimeout(() => {
-      randomInt > 5
+      randomInt > 3
         ? resolve('Mock API successfully added todo!')
         : reject({ message: 'Mock API Error', todoId: payload.id })
     }, timeout)

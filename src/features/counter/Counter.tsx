@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-// Hooks and utils
-import { useActionInProgress } from 'hooks/useActionInProgress'
-
 import {
   decrement,
   increment,
@@ -27,14 +24,12 @@ import {
 } from '@chakra-ui/core/dist'
 
 export const Counter = () => {
+  const dispatch = useDispatch()
   const toast = useToast()
 
   // State selectors
   const { value, loading, error } = useSelector(selectCounter)
   const isLoading = loading === 'pending'
-
-  // Redux dispatch
-  const dispatch = useDispatch()
 
   // Local state
   const [incrementAmount, setIncrementAmount] = useState<number>(4)
@@ -46,7 +41,7 @@ export const Counter = () => {
   const handleSliderChange = (value: number) => setIncrementAmount(value)
 
   useEffect(() => {
-    error && toast({ title: 'Error', duration: 2000, status: 'error' })
+    error && toast({ title: 'Error', description: error.message, duration: 2000, status: 'error' })
   }, [error, toast])
 
   return (
