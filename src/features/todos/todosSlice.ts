@@ -6,7 +6,7 @@ import { RootState } from 'app/rootReducer'
 import { AppThunk } from 'app/store'
 
 // Utils
-import { mockAddTodo } from 'utilities/mock'
+import { mockAddTodo } from 'utilities/mockIncrement'
 
 export type Todo = {
   id: string

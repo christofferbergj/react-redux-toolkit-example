@@ -18,20 +18,6 @@ export type User = {
   }
 }
 
-type UsersState = {
-  entities: User[]
-  loading: 'idle' | 'pending'
-  currentRequestId: string | undefined
-  error: any
-}
-
-const initialState: UsersState = {
-  entities: [],
-  loading: 'idle',
-  currentRequestId: undefined,
-  error: null,
-}
-
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async (_arg, { getState, requestId }) => {
@@ -46,6 +32,20 @@ export const fetchUsers = createAsyncThunk(
     return await response.json()
   }
 )
+
+type UsersState = {
+  entities: User[]
+  loading: 'idle' | 'pending'
+  currentRequestId: string | undefined
+  error: any
+}
+
+const initialState: UsersState = {
+  entities: [],
+  loading: 'idle',
+  currentRequestId: undefined,
+  error: null,
+}
 
 export const usersSlice = createSlice({
   name: 'users',

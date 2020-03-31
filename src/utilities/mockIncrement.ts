@@ -3,18 +3,22 @@ import { getRandomInt } from './getRandomInt'
 
 // Types
 import { Todo } from 'features/todos/todosSlice'
+import nanoid from 'nanoid'
 
 /**
  * Mock API call
+ * @param payload
  * @param {number} timeout
  * @returns {Promise<string>}
  */
-export const mock = (timeout: number = 1000) => {
+export const mockIncrement = (payload: number, timeout: number = 1000) => {
   const randomInt = getRandomInt(10)
 
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
     setTimeout(() => {
-      randomInt > 2 ? resolve('Mock API success!') : reject({ message: 'Mock API Error' })
+      randomInt > 2
+        ? resolve({ message: 'Mock API success!', data: payload })
+        : reject({ message: 'Mock API Error', id: nanoid() })
     }, timeout)
   })
 }

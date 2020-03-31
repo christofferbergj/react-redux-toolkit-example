@@ -1,53 +1,65 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
-import { AppThunk } from 'app/store'
 
 // Utils
-import { mock } from 'utilities/mock'
+import { mockIncrement } from 'utilities/mockIncrement'
+import nanoid from 'nanoid'
 
 // Actions
-import { startAction, stopAction } from 'features/ui/uiSlice'
+export const incrementByAmountAsync = createAsyncThunk(
+  'counter/incrementByAmountAsync',
+  async (payload: number) => {
+    const response = await mockIncrement(payload)
+    return response.data
+  }
+)
 
 // Types
-type CounterState = number
+type CounterState = {
+  value: number
+  loading: 'idle' | 'pending'
+  error: any
+}
 
-const initialState: CounterState = 0
+const initialState: CounterState = {
+  value: 0,
+  loading: 'idle',
+  error: null,
+}
 
 export const counterSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
-    increment: (state) => state + 1,
-    decrement: (state) => state - 1,
-    incrementByAmount: (state, action: PayloadAction<number>) => state + action.payload,
+    increment: (state) => {
+      state.value = state.value + 1
+    },
+    decrement: (state) => {
+      state.value = state.value + 1
+    },
+    incrementByAmount: (state, { payload }: PayloadAction<number>) => {
+      state.value = state.value + payload
+    },
     reset: () => initialState,
+  },
+  extraReducers: {
+    [incrementByAmountAsync.pending.type]: (state) => {
+      state.loading = 'pending'
+    },
+    [incrementByAmountAsync.fulfilled.type]: (state, { payload }: PayloadAction<number>) => {
+      state.loading = 'idle'
+      state.value = state.value + payload
+    },
+    [incrementByAmountAsync.rejected.type]: (state, { error }) => {
+      state.loading = 'idle'
+      state.error = { error, id: nanoid() }
+    },
   },
 })
 
 // Slice action creators
 export const { increment, decrement, incrementByAmount, reset } = counterSlice.actions
 
-/**
- * Asynchronously increment the counter state
- * @example
- *  dispatch(incrementByAmountAsync(10))
- * @returns {AppThunk}
- * @param payload
- */
-export const incrementByAmountAsync = (payload: number): AppThunk => async (dispatch) => {
-  const { type } = incrementByAmount
-
-  try {
-    dispatch(startAction(type))
-    await mock()
-    dispatch(incrementByAmount(payload))
-  } catch (err) {
-    console.log(err)
-  } finally {
-    dispatch(stopAction(type))
-  }
-}
-
-export const selectCount = (state: RootState) => state.counter
+export const selectCounter = (state: RootState) => state.counter
 
 export default counterSlice.reducer

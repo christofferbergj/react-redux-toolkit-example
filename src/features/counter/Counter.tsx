@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Hooks and utils
@@ -10,7 +10,7 @@ import {
   incrementByAmountAsync,
   incrementByAmount,
   reset,
-  selectCount,
+  selectCounter,
 } from './counterSlice'
 
 // Components
@@ -23,12 +23,15 @@ import {
   SliderTrack,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/core/dist'
 
 export const Counter = () => {
+  const toast = useToast()
+
   // State selectors
-  const count = useSelector(selectCount)
-  const isLoading = useActionInProgress(incrementByAmount.type)
+  const { value, loading, error } = useSelector(selectCounter)
+  const isLoading = loading === 'pending'
 
   // Redux dispatch
   const dispatch = useDispatch()
@@ -42,16 +45,20 @@ export const Counter = () => {
    */
   const handleSliderChange = (value: number) => setIncrementAmount(value)
 
+  useEffect(() => {
+    error && toast({ title: 'Error', duration: 2000, status: 'error' })
+  }, [error, toast])
+
   return (
     <>
       <Stack spacing={{ base: 6, md: 4 }}>
         <Stack isInline spacing={4} align={'center'}>
-          <Button isDisabled={isLoading} onClick={() => !!count && dispatch(decrement())}>
+          <Button isDisabled={isLoading} onClick={() => !!value && dispatch(decrement())}>
             -
           </Button>
 
           <Text as={'span'} fontSize={'2xl'} fontWeight={'medium'}>
-            {count}
+            {value}
           </Text>
 
           <Button isDisabled={isLoading} onClick={() => dispatch(increment())}>
@@ -73,7 +80,7 @@ export const Counter = () => {
               Increment async
             </Button>
 
-            <Button onClick={() => !!count && dispatch(reset())} size={'sm'}>
+            <Button onClick={() => !!value && dispatch(reset())} size={'sm'}>
               Reset
             </Button>
           </Stack>
