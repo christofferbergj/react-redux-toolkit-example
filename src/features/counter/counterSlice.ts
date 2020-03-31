@@ -3,7 +3,6 @@ import { RootState } from 'app/rootReducer'
 
 // Utils
 import { mockIncrement } from 'utilities/mockIncrement'
-import nanoid from 'nanoid'
 
 // Actions
 export const incrementByAmountAsync = createAsyncThunk(
@@ -13,7 +12,7 @@ export const incrementByAmountAsync = createAsyncThunk(
       const response = await mockIncrement(payload)
       return response.data
     } catch (err) {
-      return rejectWithValue({ message: err.message, id: nanoid() })
+      return rejectWithValue(err)
     }
   }
 )

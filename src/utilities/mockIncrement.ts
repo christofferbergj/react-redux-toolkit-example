@@ -1,3 +1,5 @@
+import nanoid from 'nanoid'
+
 // Utils
 import { getRandomInt } from './getRandomInt'
 
@@ -17,7 +19,7 @@ export const mockIncrement = (payload: number, timeout: number = 1000) => {
     setTimeout(() => {
       randomInt > 3
         ? resolve({ message: 'Mock increment API success!', data: payload })
-        : reject(new Error('Mock increment API error'))
+        : reject({ message: 'Mock increment API error', id: nanoid() })
     }, timeout)
   })
 }
