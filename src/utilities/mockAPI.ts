@@ -13,11 +13,11 @@ import { Todo } from 'features/todos/todosSlice'
  * @returns {Promise<string>}
  */
 export const mockIncrement = (payload: number, timeout: number = 1000) => {
-  const randomInt = getRandomInt(10)
+  const randomInt = getRandomInt(9)
 
   return new Promise<any>((resolve, reject) => {
     setTimeout(() => {
-      randomInt > 3
+      randomInt > 1
         ? resolve({ message: 'Mock increment API success!', data: payload })
         : reject({ message: 'Mock increment API error', id: nanoid() })
     }, timeout)
@@ -31,11 +31,11 @@ export const mockIncrement = (payload: number, timeout: number = 1000) => {
  * @returns {Promise<string>}
  */
 export const mockAddTodo = (payload: Todo, timeout: number = 1000) => {
-  const randomInt = getRandomInt(10)
+  const randomInt = getRandomInt(9)
 
   return new Promise<string>((resolve, reject) => {
     setTimeout(() => {
-      randomInt > 3
+      randomInt > 1
         ? resolve('Mock API successfully added todo!')
         : reject({ message: 'Mock API failed', id: payload.id })
     }, timeout)

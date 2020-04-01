@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   addTodoFirebase,
   deleteCompleted,
+  completeAll,
   selectActiveTodosCount,
   selectCompleteTodosCount,
   selectTodos,
@@ -126,16 +127,29 @@ export const TodoList = () => {
       <Divider mt={5} mb={3} />
 
       <Flex align={'center'} width={'full'}>
-        {!!completeTodosCount && (
-          <Button
-            onClick={() => dispatch(deleteCompleted())}
-            variant={'link'}
-            size={'xs'}
-            leftIcon={'delete'}
-          >
-            Clear completed
-          </Button>
-        )}
+        <Stack isInline spacing={5}>
+          {!!activeTodosCount && (
+            <Button
+              onClick={() => dispatch(completeAll())}
+              variant={'link'}
+              size={'xs'}
+              leftIcon={'check-circle'}
+            >
+              Complete all
+            </Button>
+          )}
+
+          {!!completeTodosCount && (
+            <Button
+              onClick={() => dispatch(deleteCompleted())}
+              variant={'link'}
+              size={'xs'}
+              leftIcon={'delete'}
+            >
+              Clear completed
+            </Button>
+          )}
+        </Stack>
 
         <Stack isInline spacing={2} ml={'auto'}>
           <FilterButton filter={VisibilityFilters.SHOW_ALL}>All</FilterButton>

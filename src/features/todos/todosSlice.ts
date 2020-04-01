@@ -78,6 +78,11 @@ export const todosSlice = createSlice({
     deleteCompleted: (state) => {
       state.entities = state.entities.filter((todo) => !todo.isCompleted)
     },
+    completeAll: (state) => {
+      state.entities.forEach((todo) => {
+        todo.isCompleted = true
+      })
+    },
   },
   extraReducers: {
     [addTodoFirebase.pending.type]: (state, { meta }) => {
@@ -98,7 +103,14 @@ export const todosSlice = createSlice({
 })
 
 // ActionType creators
-export const { addTodo, toggleTodo, deleteTodo, deleteCompleted, editTodo } = todosSlice.actions
+export const {
+  addTodo,
+  toggleTodo,
+  deleteTodo,
+  deleteCompleted,
+  editTodo,
+  completeAll,
+} = todosSlice.actions
 
 // State selectors
 export const selectTodos = (state: RootState) => state.todos
