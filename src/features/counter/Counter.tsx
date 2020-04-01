@@ -96,6 +96,7 @@ export const Counter = () => {
               width={'40px'}
               height={'25px'}
               fontWeight={'medium'}
+              color={'gray.800'}
               children={incrementAmount}
             />
           </Slider>

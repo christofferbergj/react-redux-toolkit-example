@@ -19,7 +19,7 @@ const App = () => {
 
   return (
     <AppLayout py={10}>
-      <Stack spacing={8}>
+      <Stack spacing={{ base: 6, lg: 8 }}>
         <Header />
 
         <Inner>

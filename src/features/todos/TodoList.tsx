@@ -131,10 +131,11 @@ export const TodoList = () => {
           {!!activeTodosCount && (
             <Button
               onClick={() => dispatch(completeAll())}
-              variant={'link'}
-              size={'xs'}
               leftIcon={'check-circle'}
               ml={1}
+              size={'xs'}
+              transition={'none'}
+              variant={'link'}
             >
               Complete all
             </Button>
@@ -143,10 +144,11 @@ export const TodoList = () => {
           {!!completeTodosCount && (
             <Button
               onClick={() => dispatch(deleteCompleted())}
-              variant={'link'}
-              size={'xs'}
               leftIcon={'delete'}
               ml={1}
+              size={'xs'}
+              transition={'none'}
+              variant={'link'}
             >
               Clear completed
             </Button>
