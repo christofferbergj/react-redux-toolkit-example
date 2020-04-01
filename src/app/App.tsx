@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { GoMarkGithub } from 'react-icons/go'
 
 // Slices
 import { fetchUsers } from 'features/users/usersSlice'
@@ -11,7 +12,7 @@ import { TodoList } from 'features/todos'
 import { Users } from 'features/users/Users'
 
 // Components
-import { Button, Flex, Heading, Stack } from '@chakra-ui/core/dist'
+import { Box, Button, Flex, Heading, Link, Stack } from '@chakra-ui/core/dist'
 import { AppLayout, ElevatedBox, Inner } from 'components'
 
 const App = () => {
@@ -20,8 +21,16 @@ const App = () => {
   return (
     <AppLayout py={10}>
       <Stack spacing={8}>
-        <Inner>
+        <Inner display={'flex'} alignItems={'center'}>
           <ActionCounter />
+
+          <Link
+            href="https://github.com/christofferberg/react-redux-toolkit-example"
+            isExternal
+            ml={'auto'}
+          >
+            <Box as={GoMarkGithub} size={'25px'} />
+          </Link>
         </Inner>
 
         <Inner>
