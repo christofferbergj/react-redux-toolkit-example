@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 // Components
-import { Box, BoxProps } from '@chakra-ui/core/dist'
+import { Box, BoxProps, useColorMode } from '@chakra-ui/core/dist'
 
 type Props = {
   children: ReactNode
@@ -9,9 +9,12 @@ type Props = {
 } & BoxProps
 
 export const ElevatedBox = ({ children, shadowSize = 'md', ...rest }: Props) => {
+  const { colorMode } = useColorMode()
+  const bgColor = { light: 'white', dark: 'gray.800' }
+
   return (
     <>
-      <Box rounded={'md'} p={5} bg={'white'} shadow={shadowSize} {...rest}>
+      <Box rounded={'md'} p={5} bg={bgColor[colorMode]} shadow={shadowSize} {...rest}>
         {children}
       </Box>
     </>

@@ -9,7 +9,7 @@ import store from 'app/store'
 import { theme } from './theme'
 
 // Chakra
-import { ThemeProvider, CSSReset } from '@chakra-ui/core/dist'
+import { ThemeProvider, ColorModeProvider, CSSReset } from '@chakra-ui/core/dist'
 
 const render = () => {
   const App = require('./app').default
@@ -17,8 +17,10 @@ const render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <CSSReset />
-        <App />
+        <ColorModeProvider>
+          <CSSReset />
+          <App />
+        </ColorModeProvider>
       </ThemeProvider>
     </Provider>,
     document.getElementById('root')

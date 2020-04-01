@@ -27,9 +27,9 @@ export const FilterButton = memo(({ filter, children, ...rest }: Props) => {
   const visibilityFilter = useSelector(selectFilter)
 
   const activeProps = {
-    bg: 'purple.500',
+    bg: 'primary',
     color: 'white',
-    borderColor: 'purple.500',
+    borderColor: 'primary',
     _hover: { bg: 'purple.600' },
     _active: { bg: 'purple.700' },
   }
