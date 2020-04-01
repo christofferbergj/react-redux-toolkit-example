@@ -126,7 +126,7 @@ export const TodoList = () => {
 
       <Divider mt={5} mb={3} />
 
-      <Flex align={'center'} width={'full'}>
+      <Flex width={'full'} direction={{ base: 'column', sm: 'row' }} align={{ sm: 'center' }}>
         <Stack isInline spacing={5}>
           {!!activeTodosCount && (
             <Button
@@ -134,6 +134,7 @@ export const TodoList = () => {
               variant={'link'}
               size={'xs'}
               leftIcon={'check-circle'}
+              ml={1}
             >
               Complete all
             </Button>
@@ -145,13 +146,14 @@ export const TodoList = () => {
               variant={'link'}
               size={'xs'}
               leftIcon={'delete'}
+              ml={1}
             >
               Clear completed
             </Button>
           )}
         </Stack>
 
-        <Stack isInline spacing={2} ml={'auto'}>
+        <Stack isInline spacing={2} ml={{ sm: 'auto' }} mt={{ base: 5, sm: 0 }}>
           <FilterButton filter={VisibilityFilters.SHOW_ALL}>All</FilterButton>
           <FilterButton filter={VisibilityFilters.SHOW_ACTIVE}>Active</FilterButton>
           <FilterButton filter={VisibilityFilters.SHOW_COMPLETED}>Completed</FilterButton>
