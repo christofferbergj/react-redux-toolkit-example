@@ -47,7 +47,13 @@ export type TodosState = {
 }
 
 const initialState: TodosState = {
-  entities: [],
+  entities: [
+    {
+      id: nanoid(),
+      description: 'Hello world!',
+      isCompleted: false,
+    },
+  ],
   loading: 'idle',
   currentRequestId: undefined,
   error: null,

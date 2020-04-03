@@ -21,7 +21,7 @@ import {
 
 // Components
 import { TodoItem } from './TodoItem'
-import { FilterButton } from 'features/visibilityFilter'
+import { FilterButtons } from 'features/visibilityFilter'
 import {
   Button,
   Divider,
@@ -124,42 +124,40 @@ export const TodoList = () => {
         </List>
       )}
 
-      <Divider mt={5} mb={3} />
+      <Divider my={5} />
 
-      <Flex width={'full'} direction={{ base: 'column', sm: 'row' }} align={{ sm: 'center' }}>
-        <Stack isInline spacing={5}>
-          {!!activeTodosCount && (
-            <Button
-              onClick={() => dispatch(completeAll())}
-              leftIcon={'check-circle'}
-              ml={1}
-              size={'xs'}
-              transition={'none'}
-              variant={'link'}
-            >
-              Complete all
-            </Button>
-          )}
+      <Flex width={'full'} direction={{ base: 'column', md: 'row' }} align={{ md: 'center' }}>
+        {(activeTodosCount > 0 || completeTodosCount > 0) && (
+          <Stack isInline spacing={5} mb={{ base: 6, md: 0 }}>
+            {activeTodosCount > 0 && (
+              <Button
+                onClick={() => dispatch(completeAll())}
+                leftIcon={'check-circle'}
+                ml={1}
+                size={'xs'}
+                transition={'none'}
+                variant={'link'}
+              >
+                Complete all
+              </Button>
+            )}
 
-          {!!completeTodosCount && (
-            <Button
-              onClick={() => dispatch(deleteCompleted())}
-              leftIcon={'delete'}
-              ml={1}
-              size={'xs'}
-              transition={'none'}
-              variant={'link'}
-            >
-              Clear completed
-            </Button>
-          )}
-        </Stack>
+            {completeTodosCount > 0 && (
+              <Button
+                onClick={() => dispatch(deleteCompleted())}
+                leftIcon={'delete'}
+                ml={1}
+                size={'xs'}
+                transition={'none'}
+                variant={'link'}
+              >
+                Clear completed
+              </Button>
+            )}
+          </Stack>
+        )}
 
-        <Stack isInline spacing={2} ml={{ sm: 'auto' }} mt={{ base: 5, sm: 0 }}>
-          <FilterButton filter={VisibilityFilters.SHOW_ALL}>All</FilterButton>
-          <FilterButton filter={VisibilityFilters.SHOW_ACTIVE}>Active</FilterButton>
-          <FilterButton filter={VisibilityFilters.SHOW_COMPLETED}>Completed</FilterButton>
-        </Stack>
+        <FilterButtons isInline spacing={2} ml={{ md: 'auto' }} />
       </Flex>
     </>
   )

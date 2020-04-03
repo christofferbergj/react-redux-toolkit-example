@@ -1,1 +1,1 @@
-export { FilterButton } from './FilterButton'
+export { FilterButtons } from './FilterButtons'
