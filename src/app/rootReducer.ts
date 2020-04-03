@@ -1,4 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit'
+import { firebaseReducer } from 'react-redux-firebase'
+import { firestoreReducer } from 'redux-firestore'
 
 // Reducers
 import actionCounterReducer from 'features/actionCounter/actionCounterSlice'
@@ -8,6 +10,8 @@ import usersReducer from 'features/users/usersSlice'
 import visibilityFilterReducer from 'features/visibilityFilter/filtersSlice'
 
 const rootReducer = combineReducers({
+  firebase: firebaseReducer,
+  firestore: firestoreReducer,
   actionCounter: actionCounterReducer,
   counter: counterReducer,
   todos: todosReducer,

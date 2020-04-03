@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 import * as serviceWorker from 'serviceWorker'
 
 // Store
-import store from 'app/store'
+import store, { rrfProps } from 'app/store'
 
+// Theme
 import { theme } from './theme'
 
 // Chakra
@@ -16,12 +18,14 @@ const render = () => {
 
   ReactDOM.render(
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <ColorModeProvider>
-          <CSSReset />
-          <App />
-        </ColorModeProvider>
-      </ThemeProvider>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <ThemeProvider theme={theme}>
+          <ColorModeProvider>
+            <CSSReset />
+            <App />
+          </ColorModeProvider>
+        </ThemeProvider>
+      </ReactReduxFirebaseProvider>
     </Provider>,
     document.getElementById('root')
   )
