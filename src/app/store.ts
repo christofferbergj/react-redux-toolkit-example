@@ -1,6 +1,6 @@
 import { configureStore, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { ThunkAction } from 'redux-thunk'
-import { createFirestoreInstance, getFirestore } from 'redux-firestore'
+import { createFirestoreInstance } from 'redux-firestore'
 import { getFirebase } from 'react-redux-firebase'
 
 import firebase from './firebase'
@@ -13,7 +13,7 @@ const rrfConfig = {
 
 const middleware = getDefaultMiddleware({
   thunk: {
-    extraArgument: { getFirebase, getFirestore },
+    extraArgument: { getFirebase },
   },
 })
 

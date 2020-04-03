@@ -39,7 +39,7 @@ export const addTodoFirebase: any = createAsyncThunk<
     dispatch(addTodo(todo))
 
     try {
-      firestore.collection(TODOS_COLLECTION).add({ todo })
+      // firestore.collection(TODOS_COLLECTION).add({ todo })
     } catch (err) {
       return rejectWithValue(err)
     }
