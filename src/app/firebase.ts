@@ -2,7 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyB_V8HqymN9WQh07pw4rHkdwbbF7_jLhbc',
   authDomain: 'react-redux-toolkit-68f28.firebaseapp.com',
   databaseURL: 'https://react-redux-toolkit-68f28.firebaseio.com',

@@ -1,6 +1,7 @@
-import { configureStore, Action } from '@reduxjs/toolkit'
+import { configureStore, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { ThunkAction } from 'redux-thunk'
-import { createFirestoreInstance } from 'redux-firestore'
+import { createFirestoreInstance, getFirestore } from 'redux-firestore'
+import { getFirebase } from 'react-redux-firebase'
 
 import firebase from './firebase'
 import rootReducer, { RootState } from './rootReducer'
@@ -10,8 +11,15 @@ const rrfConfig = {
   useFirestoreForProfile: true,
 }
 
+const middleware = getDefaultMiddleware({
+  thunk: {
+    extraArgument: { getFirebase, getFirestore },
+  },
+})
+
 const store = configureStore({
   reducer: rootReducer,
+  middleware,
 })
 
 export const rrfProps = {

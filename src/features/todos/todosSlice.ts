@@ -5,13 +5,26 @@ import nanoid from 'nanoid'
 import { RootState } from 'app/rootReducer'
 
 // Utils
-import { mockAddTodo } from 'utilities/mockAPI'
-import store from 'app/store'
+import { AppDispatch } from 'app/store'
 
-export const addTodoFirebase = createAsyncThunk(
+export const TODOS_COLLECTION = 'todos'
+
+export const addTodoFirebase: any = createAsyncThunk<
+  any,
+  string,
+  {
+    dispatch: AppDispatch
+    state: RootState
+    extra: {
+      getFirebase: Function
+    }
+  }
+>(
   'todos/addTodoFirebase',
-  async (payload: Todo['description'], { dispatch, rejectWithValue, requestId }) => {
-    const { currentRequestId, loading } = store.getState().todos
+  async (payload, { dispatch, rejectWithValue, requestId, getState, extra: { getFirebase } }) => {
+    const { currentRequestId, loading } = getState().todos
+    const firebase = getFirebase()
+    const firestore = firebase.firestore()
 
     if (loading === 'pending' && requestId !== currentRequestId) {
       return
@@ -26,7 +39,7 @@ export const addTodoFirebase = createAsyncThunk(
     dispatch(addTodo(todo))
 
     try {
-      return await mockAddTodo(todo)
+      firestore.collection(TODOS_COLLECTION).add({ todo })
     } catch (err) {
       return rejectWithValue(err)
     }
@@ -47,13 +60,7 @@ export type TodosState = {
 }
 
 const initialState: TodosState = {
-  entities: [
-    {
-      id: nanoid(),
-      description: 'Hello world!',
-      isCompleted: false,
-    },
-  ],
+  entities: [],
   loading: 'idle',
   currentRequestId: undefined,
   error: null,
