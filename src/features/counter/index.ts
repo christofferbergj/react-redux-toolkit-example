@@ -1,1 +1,1 @@
-export { Counter } from './Counter'
+export { CounterExample } from './CounterExample'

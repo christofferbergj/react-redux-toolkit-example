@@ -19,7 +19,7 @@ export const Users = () => {
 
   return (
     <>
-      <SimpleGrid minChildWidth={'200px'} spacing={{ base: 2, tablet: 4 }}>
+      <SimpleGrid minChildWidth={'215px'} spacing={{ base: 2, tablet: 3 }}>
         {loading === 'pending' ? (
           <UserSkeleton />
         ) : (

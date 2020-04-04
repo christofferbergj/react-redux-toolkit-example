@@ -8,7 +8,7 @@ import * as serviceWorker from 'serviceWorker'
 import store, { rrfProps } from 'app/store'
 
 // Theme
-import { theme } from './theme'
+import { theme, defaultConfig } from './theme'
 
 // Chakra
 import { ThemeProvider, ColorModeProvider, CSSReset } from '@chakra-ui/core/dist'
@@ -21,7 +21,7 @@ const render = () => {
       <ReactReduxFirebaseProvider {...rrfProps}>
         <ThemeProvider theme={theme}>
           <ColorModeProvider>
-            <CSSReset />
+            <CSSReset config={defaultConfig} />
             <App />
           </ColorModeProvider>
         </ThemeProvider>

@@ -10,7 +10,7 @@ type Props = {
 
 export const ElevatedBox = ({ children, shadowSize = 'md', ...rest }: Props) => {
   const { colorMode } = useColorMode()
-  const bgColor = { light: 'white', dark: 'gray.800' }
+  const bgColor = { light: 'white', dark: 'gray.750' }
 
   return (
     <>

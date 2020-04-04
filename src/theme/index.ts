@@ -1,1 +1,1 @@
-export { theme } from './theme'
+export { theme, defaultConfig } from './theme'
