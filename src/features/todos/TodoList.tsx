@@ -98,7 +98,7 @@ export const TodoList = () => {
 
           <InputRightElement width="4.5rem">
             <Button
-              h="2rem"
+              h="1.75rem"
               isDisabled={!todoDescription}
               onClick={() => handleAddTodo}
               type={'submit'}

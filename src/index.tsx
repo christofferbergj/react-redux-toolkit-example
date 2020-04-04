@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 import * as serviceWorker from 'serviceWorker'
 
@@ -12,6 +13,7 @@ import { theme, defaultConfig } from './theme'
 
 // Chakra
 import { ThemeProvider, ColorModeProvider, CSSReset } from '@chakra-ui/core/dist'
+import { AuthIsLoaded } from 'components'
 
 const render = () => {
   const App = require('./app').default
@@ -22,7 +24,11 @@ const render = () => {
         <ThemeProvider theme={theme}>
           <ColorModeProvider>
             <CSSReset config={defaultConfig} />
-            <App />
+            <BrowserRouter>
+              <AuthIsLoaded>
+                <App />
+              </AuthIsLoaded>
+            </BrowserRouter>
           </ColorModeProvider>
         </ThemeProvider>
       </ReactReduxFirebaseProvider>

@@ -23,8 +23,6 @@ export const addTodoFirebase: any = createAsyncThunk<
   'todos/addTodoFirebase',
   async (payload, { dispatch, rejectWithValue, requestId, getState, extra: { getFirebase } }) => {
     const { currentRequestId, loading } = getState().todos
-    const firebase = getFirebase()
-    const firestore = firebase.firestore()
 
     if (loading === 'pending' && requestId !== currentRequestId) {
       return
