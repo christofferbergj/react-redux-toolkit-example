@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 import { Route, Redirect, RouteProps } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { isLoaded, isEmpty } from 'react-redux-firebase'
-import { selectAuth } from 'features/auth/authSlice'
+import { isEmpty } from 'react-redux-firebase'
+import { selectFirebaseAuth } from 'features/auth/authSlice'
 
 type Props = {
   children: ReactNode
@@ -12,18 +12,18 @@ type Props = {
 // screen if you're not yet authenticated or if auth is not
 // yet loaded
 export const PrivateRoute = ({ children, ...rest }: Props) => {
-  const auth = useSelector(selectAuth)
+  const auth = useSelector(selectFirebaseAuth)
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        isLoaded(auth) && !isEmpty(auth) ? (
+        !isEmpty(auth) ? (
           children
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: '/sign-in',
               state: { from: location },
             }}
           />

@@ -1,6 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+
+import { selectAuth, selectFirebaseAuth, signIn } from './authSlice'
 
 // Components
 import { ElevatedBox, Inner } from 'components'
@@ -15,9 +18,8 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
-  useToast,
 } from '@chakra-ui/core/dist'
-import { selectAuth, signIn } from './authSlice'
+import { isEmpty } from 'react-redux-firebase'
 
 type FormData = {
   email: string
@@ -26,24 +28,18 @@ type FormData = {
 
 export const SignIn = () => {
   const dispatch = useDispatch()
-  const toast = useToast()
-  const { loading, error } = useSelector(selectAuth)
+  const history = useHistory()
+  const { loading } = useSelector(selectAuth)
+  const auth = useSelector(selectFirebaseAuth)
   const { register, handleSubmit, errors } = useForm<FormData>()
   const [showPassword, setShowPassword] = React.useState(false)
 
+  !isEmpty(auth) && history.push('/')
+
   const handleShowPassword = () => setShowPassword(!showPassword)
-
-  const onSubmit = handleSubmit(async ({ email, password }, e) => {
-    try {
-      await dispatch(signIn({ email, password }))
-    } finally {
-      e?.target.reset()
-    }
+  const onSubmit = handleSubmit(async ({ email, password }) => {
+    await dispatch(signIn({ email, password }))
   })
-
-  useEffect(() => {
-    error && toast({ title: error.code, description: error.message, status: 'error' })
-  }, [error, toast])
 
   return (
     <>

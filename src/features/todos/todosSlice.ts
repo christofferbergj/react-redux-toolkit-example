@@ -24,9 +24,8 @@ export const addTodoFirebase: any = createAsyncThunk<
   async (payload, { dispatch, rejectWithValue, requestId, getState, extra: { getFirebase } }) => {
     const { currentRequestId, loading } = getState().todos
 
-    if (loading === 'pending' && requestId !== currentRequestId) {
-      return
-    }
+    // Single request at a time
+    if (loading === 'pending' && requestId !== currentRequestId) return
 
     const todo: Todo = {
       id: nanoid(),

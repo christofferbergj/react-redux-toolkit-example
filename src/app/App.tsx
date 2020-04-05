@@ -16,7 +16,7 @@ const App = () => {
   return (
     <AppLayout>
       <Switch>
-        <Route path="/login">
+        <Route path="/sign-in">
           <SignIn />
         </Route>
 

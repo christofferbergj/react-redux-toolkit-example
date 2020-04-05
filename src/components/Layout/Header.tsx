@@ -1,14 +1,29 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { isEmpty } from 'react-redux-firebase'
+
 import { IoLogoGithub } from 'react-icons/all'
 
 // Slices
-import { ActionCounter } from 'features/actionCounter'
+import { selectFirebaseAuth, signOut } from 'features/auth/authSlice'
 
 // Components
-import { Box, BoxProps, IconButton, Link, Stack, Tooltip, useColorMode } from '@chakra-ui/core/dist'
+import {
+  Box,
+  BoxProps,
+  Button,
+  Flex,
+  IconButton,
+  Link,
+  Stack,
+  Tooltip,
+  useColorMode,
+} from '@chakra-ui/core/dist'
 import { Inner } from 'components/Inner'
 
 export const Header = ({ ...rest }: BoxProps) => {
+  const dispatch = useDispatch()
+  const auth = useSelector(selectFirebaseAuth)
   const { colorMode, toggleColorMode } = useColorMode()
   const bgColor = { light: 'gray.50', dark: 'gray.800' }
 
@@ -27,34 +42,40 @@ export const Header = ({ ...rest }: BoxProps) => {
         {...rest}
       >
         <Inner display={'flex'} alignItems={'center'}>
-          <ActionCounter />
+          <Stack isInline spacing={3} ml={'auto'} align={'center'}>
+            {!isEmpty(auth) && (
+              <Button onClick={() => dispatch(signOut())} size={'xs'}>
+                Sign out
+              </Button>
+            )}
 
-          <Stack isInline spacing={0} ml={'auto'} align={'center'}>
-            <Link
-              href="https://github.com/christofferberg/react-redux-toolkit-example"
-              isExternal
-              color={'gray.500'}
-              rounded={'md'}
-              p={2}
-            >
-              <Box as={IoLogoGithub} size={'20px'} />
-            </Link>
-
-            <Tooltip
-              aria-label={colorMode === 'light' ? 'Toggle dark mode' : 'Toggle light mode'}
-              label={colorMode === 'light' ? 'Toggle dark mode' : 'Toggle light mode'}
-              showDelay={1000}
-              fontSize="xs"
-            >
-              <IconButton
-                bg={'transparent'}
+            <Flex align={'center'}>
+              <Link
+                href="https://github.com/christofferberg/react-redux-toolkit-example"
+                isExternal
                 color={'gray.500'}
-                aria-label={'Toggle color mode'}
-                onClick={toggleColorMode}
-                fontSize={'20px'}
-                icon={colorMode === 'light' ? 'moon' : 'sun'}
-              />
-            </Tooltip>
+                rounded={'md'}
+                p={2}
+              >
+                <Box as={IoLogoGithub} size={'20px'} />
+              </Link>
+
+              <Tooltip
+                aria-label={colorMode === 'light' ? 'Toggle dark mode' : 'Toggle light mode'}
+                label={colorMode === 'light' ? 'Toggle dark mode' : 'Toggle light mode'}
+                showDelay={1000}
+                fontSize="xs"
+              >
+                <IconButton
+                  bg={'transparent'}
+                  color={'gray.500'}
+                  aria-label={'Toggle color mode'}
+                  onClick={toggleColorMode}
+                  fontSize={'20px'}
+                  icon={colorMode === 'light' ? 'moon' : 'sun'}
+                />
+              </Tooltip>
+            </Flex>
           </Stack>
         </Inner>
       </Box>

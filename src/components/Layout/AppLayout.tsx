@@ -13,11 +13,9 @@ type Props = {
 export const AppLayout = ({ children, ...rest }: Props) => {
   return (
     <Flex direction={'column'} minHeight={'100vh'} {...rest}>
-      <Flex direction={'column'} flex={1}>
-        <Header />
-        <Main>{children}</Main>
-        <Footer />
-      </Flex>
+      <Header />
+      <Main>{children}</Main>
+      <Footer />
     </Flex>
   )
 }
