@@ -8,10 +8,8 @@ import * as serviceWorker from 'serviceWorker'
 // Store
 import store, { rrfProps } from 'app/store'
 
-// Theme
-import { theme, defaultConfig } from './theme'
-
-// Chakra
+// Theme and components
+import { theme, defaultConfig } from 'theme'
 import { ThemeProvider, ColorModeProvider, CSSReset } from '@chakra-ui/core/dist'
 import { AuthIsLoaded } from 'components'
 
@@ -24,11 +22,9 @@ const render = () => {
         <ThemeProvider theme={theme}>
           <ColorModeProvider>
             <CSSReset config={defaultConfig} />
-            <BrowserRouter>
-              <AuthIsLoaded>
-                <App />
-              </AuthIsLoaded>
-            </BrowserRouter>
+            <AuthIsLoaded>
+              <App />
+            </AuthIsLoaded>
           </ColorModeProvider>
         </ThemeProvider>
       </ReactReduxFirebaseProvider>

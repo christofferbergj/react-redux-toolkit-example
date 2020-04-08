@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -18,6 +18,7 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
+  useToast,
 } from '@chakra-ui/core/dist'
 import { isEmpty } from 'react-redux-firebase'
 
@@ -27,16 +28,21 @@ type FormData = {
 }
 
 export const SignIn = () => {
+  const auth = useSelector(selectFirebaseAuth)
   const dispatch = useDispatch()
   const history = useHistory()
-  const { loading } = useSelector(selectAuth)
-  const auth = useSelector(selectFirebaseAuth)
+  const toast = useToast()
+  const { loading, error } = useSelector(selectAuth)
   const { register, handleSubmit, errors } = useForm<FormData>()
   const [showPassword, setShowPassword] = React.useState(false)
 
+
   !isEmpty(auth) && history.push('/')
 
-  const handleShowPassword = () => setShowPassword(!showPassword)
+  useEffect(() => {
+    error && toast({ status: 'error', description: error.message, isClosable: true })
+  }, [error, toast])
+
   const onSubmit = handleSubmit(async ({ email, password }) => {
     await dispatch(signIn({ email, password }))
   })
@@ -56,7 +62,6 @@ export const SignIn = () => {
                   ref={register({ required: true, pattern: /^\S+@\S+$/i })}
                   name="email"
                   type="text"
-                  id="email"
                   placeholder={'your-email@gmail.com'}
                   aria-describedby="email-helper-text"
                 />
@@ -70,12 +75,11 @@ export const SignIn = () => {
                     ref={register({ required: true })}
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    id="password"
                     pr="4.5rem"
                     placeholder="Enter password"
                   />
                   <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowPassword}>
+                    <Button h="1.75rem" size="sm" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>

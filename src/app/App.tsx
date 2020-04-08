@@ -1,11 +1,11 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 
 // Features
 import { CounterExample } from 'features/counter'
 import { TodosExample } from 'features/todos'
 import { UsersExample } from 'features/users'
-import { SignIn } from 'features/auth'
+import { SignIn, SignUp } from 'features/auth'
 
 // Components
 import { Stack } from '@chakra-ui/core/dist'
@@ -15,19 +15,25 @@ import { PrivateRoute } from 'components'
 const App = () => {
   return (
     <AppLayout>
-      <Switch>
-        <Route path="/sign-in">
-          <SignIn />
-        </Route>
+      <Router>
+        <Switch>
+          <Route path="/sign-in">
+            <SignIn />
+          </Route>
 
-        <PrivateRoute exact path="/">
-          <Stack spacing={{ base: 6, lg: 8 }}>
-            <CounterExample />
-            <TodosExample />
-            <UsersExample />
-          </Stack>
-        </PrivateRoute>
-      </Switch>
+          <Route path="/sign-up">
+            <SignUp />
+          </Route>
+
+          <PrivateRoute exact path="/">
+            <Stack spacing={{ base: 6, lg: 8 }}>
+              <CounterExample />
+              <TodosExample />
+              <UsersExample />
+            </Stack>
+          </PrivateRoute>
+        </Switch>
+      </Router>
     </AppLayout>
   )
 }

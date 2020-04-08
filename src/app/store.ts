@@ -3,13 +3,9 @@ import { ThunkAction } from 'redux-thunk'
 import { createFirestoreInstance } from 'redux-firestore'
 import { getFirebase } from 'react-redux-firebase'
 
-import firebase from './firebase'
-import rootReducer, { RootState } from './rootReducer'
-
-const rrfConfig = {
-  userProfile: 'users',
-  useFirestoreForProfile: true,
-}
+import firebase from 'app/firebase'
+import rrfConfig from 'app/config'
+import rootReducer, { RootState } from 'app/rootReducer'
 
 const middleware = getDefaultMiddleware({
   thunk: {
