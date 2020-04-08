@@ -36,11 +36,15 @@ export const SignIn = () => {
   const { register, handleSubmit, errors } = useForm<FormData>()
   const [showPassword, setShowPassword] = React.useState(false)
 
-
   !isEmpty(auth) && history.push('/')
 
   useEffect(() => {
-    error && toast({ status: 'error', description: error.message, isClosable: true })
+    error &&
+      toast({
+        status: 'error',
+        description: error.message,
+        isClosable: true,
+      })
   }, [error, toast])
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
@@ -59,7 +63,10 @@ export const SignIn = () => {
                 <FormLabel htmlFor="email">Email address</FormLabel>
 
                 <Input
-                  ref={register({ required: true, pattern: /^\S+@\S+$/i })}
+                  ref={register({
+                    required: true,
+                    pattern: /^\S+@\S+$/i,
+                  })}
                   name="email"
                   type="text"
                   placeholder={'your-email@gmail.com'}
