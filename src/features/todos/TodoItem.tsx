@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 // Slice
-import { Todo, toggleTodo, deleteTodo, editTodo } from './todosSlice'
+import { Todo, toggleTodo, editTodo, deleteTodoFirestore } from './todosSlice'
 
 // Components
 import {
@@ -93,7 +93,7 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
                   fontSize="xs"
                 >
                   <IconButton
-                    onClick={() => dispatch(deleteTodo(id))}
+                    onClick={() => dispatch(deleteTodoFirestore(id))}
                     aria-label="Delete todo"
                     icon="close"
                     size={'sm'}

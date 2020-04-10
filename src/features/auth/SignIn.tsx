@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { isEmpty } from 'react-redux-firebase'
 import { useHistory } from 'react-router-dom'
 
 import { selectAuth, selectFirebaseAuth, signIn } from './authSlice'
@@ -17,10 +19,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Stack,
+  Text,
+  useColorMode,
   useToast,
 } from '@chakra-ui/core/dist'
-import { isEmpty } from 'react-redux-firebase'
 
 type FormData = {
   email: string
@@ -28,13 +32,15 @@ type FormData = {
 }
 
 export const SignIn = () => {
+  const [showPassword, setShowPassword] = React.useState(false)
   const auth = useSelector(selectFirebaseAuth)
   const dispatch = useDispatch()
   const history = useHistory()
+  const LinkColor = { light: 'purple.500', dark: 'purple.300' }
   const toast = useToast()
+  const { colorMode } = useColorMode()
   const { loading, error } = useSelector(selectAuth)
   const { register, handleSubmit, errors } = useForm<FormData>()
-  const [showPassword, setShowPassword] = React.useState(false)
 
   !isEmpty(auth) && history.push('/')
 
@@ -106,6 +112,14 @@ export const SignIn = () => {
             </Stack>
           </Box>
         </ElevatedBox>
+
+        <Text mt={5} fontSize={'sm'}>
+          If you don't have an account, go to {/*
+          // @ts-ignore */}
+          <Link as={RouterLink} to={'/sign-up'} color={LinkColor[colorMode]}>
+            sign up
+          </Link>
+        </Text>
       </Inner>
     </>
   )

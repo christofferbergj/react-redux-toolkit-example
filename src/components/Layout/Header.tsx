@@ -1,7 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
-
 import { IoLogoGithub } from 'react-icons/all'
 
 // Slices
@@ -42,13 +41,13 @@ export const Header = ({ ...rest }: BoxProps) => {
         {...rest}
       >
         <Inner display={'flex'} alignItems={'center'}>
-          <Stack isInline spacing={3} ml={'auto'} align={'center'}>
-            {!isEmpty(auth) && (
-              <Button onClick={() => dispatch(signOut())} size={'xs'}>
-                Sign out
-              </Button>
-            )}
+          {!isEmpty(auth) && (
+            <Button onClick={() => dispatch(signOut())} size={'xs'}>
+              Sign out
+            </Button>
+          )}
 
+          <Stack isInline spacing={3} ml={'auto'} align={'center'}>
             <Flex align={'center'}>
               <Link
                 href="https://github.com/christofferberg/react-redux-toolkit-example"

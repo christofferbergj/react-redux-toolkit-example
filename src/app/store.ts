@@ -8,6 +8,7 @@ import rrfConfig from 'app/config'
 import rootReducer, { RootState } from 'app/rootReducer'
 
 const middleware = getDefaultMiddleware({
+  serializableCheck: false,
   thunk: {
     extraArgument: { getFirebase },
   },

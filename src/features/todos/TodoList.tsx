@@ -1,23 +1,23 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { usePrevious } from 'react-use'
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase'
+import { RootState } from 'app/rootReducer'
+import { timestamp } from 'app/firebase'
+
+import { selectFirebaseAuth } from 'features/auth/authSlice'
 
 // Todos slice
 import {
-  addTodoFirebase,
   deleteCompleted,
   completeAll,
   selectActiveTodosCount,
   selectCompleteTodosCount,
-  selectTodos,
+  Todo,
 } from './todosSlice'
 
 // Filters slice
-import {
-  selectVisibleTodos,
-  VisibilityFilters,
-  setFilter,
-  selectFilter,
-} from 'features/visibilityFilter/filtersSlice'
+import { VisibilityFilters, setFilter, selectFilter } from 'features/visibilityFilter/filtersSlice'
 
 // Components
 import { TodoItem } from './TodoItem'
@@ -36,16 +36,23 @@ import {
 } from '@chakra-ui/core/dist'
 
 export const TodoList = () => {
+  const auth = useSelector(selectFirebaseAuth)
+  const firestore = useFirestore()
+  useFirestoreConnect({
+    collection: 'todos',
+    where: ['author_uid', '==', auth.uid],
+    orderBy: ['createdAt', 'asc'],
+  })
   const toast = useToast()
   const dispatch = useDispatch()
-  const [todoDescription, setTodoDescription] = useState<string>('')
+  const [todoDescription, setTodoDescription] = useState<string | undefined>('')
+  const prevTodoDescription = usePrevious(todoDescription)
+  const todos: Todo[] = useSelector((state: RootState) => state.firestore.ordered.todos)
 
   // State selector
-  const todos = useSelector(selectVisibleTodos)
   const activeTodosCount = useSelector(selectActiveTodosCount)
   const completeTodosCount = useSelector(selectCompleteTodosCount)
   const visibilityFilter = useSelector(selectFilter)
-  const { error } = useSelector(selectTodos)
 
   // Change filter depending on number of items in respective filter
   useEffect(() => {
@@ -58,26 +65,34 @@ export const TodoList = () => {
     }
   }, [activeTodosCount, completeTodosCount, dispatch, visibilityFilter])
 
-  useEffect(() => {
-    error &&
-      toast({
-        title: 'Could not add todo',
-        description: error.message,
-        duration: 2000,
-        status: 'error',
-      })
-  }, [error, toast])
-
   /**
    * Handles adding a todo
    * @param {React.ChangeEvent<HTMLInputElement>} event
    */
-  const handleAddTodo = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleAddTodo = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
-    if (!todoDescription.trim()) return
+    if (!todoDescription) return
 
-    dispatch(addTodoFirebase(todoDescription))
-    setTodoDescription('')
+    const todo = {
+      author_uid: auth.uid,
+      createdAt: timestamp(),
+      description: todoDescription.trim(),
+      isCompleted: false,
+    }
+
+    try {
+      setTodoDescription('')
+      await firestore.collection('todos').add(todo)
+    } catch (err) {
+      toast({
+        title: 'Could not add todo',
+        description: err.message,
+        duration: 3000,
+        status: 'error',
+      })
+
+      setTodoDescription(prevTodoDescription)
+    }
   }
 
   return (
@@ -109,7 +124,7 @@ export const TodoList = () => {
         </InputGroup>
       </FormControl>
 
-      {todos.length > 0 && (
+      {todos && todos.length > 0 && (
         <List
           as={'ul'}
           display={'flex'}

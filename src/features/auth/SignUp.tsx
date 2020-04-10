@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { isEmpty } from 'react-redux-firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
-import { useHistory } from 'react-router-dom'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
 
 // Auth slice
 import { selectAuth, signUp, NewUser, selectFirebaseAuth } from 'features/auth/authSlice'
@@ -19,18 +19,23 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Stack,
+  Text,
+  useColorMode,
   useToast,
 } from '@chakra-ui/core/dist'
 
 export const SignUp = () => {
+  const [showPassword, setShowPassword] = React.useState(false)
   const auth = useSelector(selectFirebaseAuth)
   const dispatch = useDispatch()
   const history = useHistory()
+  const LinkColor = { light: 'purple.500', dark: 'purple.300' }
   const toast = useToast()
+  const { colorMode } = useColorMode()
   const { loading, error } = useSelector(selectAuth)
   const { register, handleSubmit, errors } = useForm<NewUser>()
-  const [showPassword, setShowPassword] = React.useState(false)
 
   !isEmpty(auth) && history.push('/')
 
@@ -116,6 +121,10 @@ export const SignUp = () => {
                   <Input
                     ref={register({
                       required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Password should be at least 6 characters',
+                      },
                     })}
                     name="password"
                     type={showPassword ? 'text' : 'password'}
@@ -144,6 +153,14 @@ export const SignUp = () => {
             </Stack>
           </Box>
         </ElevatedBox>
+
+        <Text mt={5} fontSize={'sm'}>
+          If you already have an account, go to {/*
+          // @ts-ignore */}
+          <Link as={RouterLink} to={'/sign-in'} color={LinkColor[colorMode]}>
+            sign in
+          </Link>
+        </Text>
       </Inner>
     </>
   )

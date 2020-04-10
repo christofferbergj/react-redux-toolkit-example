@@ -2,9 +2,7 @@ import React from 'react'
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 
 // Features
-import { CounterExample } from 'features/counter'
 import { TodosExample } from 'features/todos'
-import { UsersExample } from 'features/users'
 import { SignIn, SignUp } from 'features/auth'
 
 // Components
@@ -14,8 +12,8 @@ import { PrivateRoute } from 'components'
 
 const App = () => {
   return (
-    <AppLayout>
-      <Router>
+    <Router>
+      <AppLayout>
         <Switch>
           <Route path="/sign-in">
             <SignIn />
@@ -27,14 +25,12 @@ const App = () => {
 
           <PrivateRoute exact path="/">
             <Stack spacing={{ base: 6, lg: 8 }}>
-              <CounterExample />
               <TodosExample />
-              <UsersExample />
             </Stack>
           </PrivateRoute>
         </Switch>
-      </Router>
-    </AppLayout>
+      </AppLayout>
+    </Router>
   )
 }
 

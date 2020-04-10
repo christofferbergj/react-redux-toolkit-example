@@ -1,44 +1,16 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import nanoid from 'nanoid'
-
-// Root state type
 import { RootState } from 'app/rootReducer'
+import { getFirebase } from 'react-redux-firebase'
 
-// Utils
-import { AppDispatch } from 'app/store'
-
-export const TODOS_COLLECTION = 'todos'
-
-export const addTodoFirebase: any = createAsyncThunk<
-  any,
-  string,
-  {
-    dispatch: AppDispatch
-    state: RootState
-    extra: {
-      getFirebase: Function
-    }
-  }
->(
-  'todos/addTodoFirebase',
-  async (payload, { dispatch, rejectWithValue, requestId, getState, extra: { getFirebase } }) => {
-    const { currentRequestId, loading } = getState().todos
-
-    // Single request at a time
-    if (loading === 'pending' && requestId !== currentRequestId) return
-
-    const todo: Todo = {
-      id: nanoid(),
-      description: payload,
-      isCompleted: false,
-    }
-
-    dispatch(addTodo(todo))
+export const deleteTodoFirestore = createAsyncThunk(
+  'todos/deleteTodoFirestore',
+  async (id: string, thunkAPI) => {
+    const firestore = getFirebase().firestore()
 
     try {
-      // firestore.collection(TODOS_COLLECTION).add({ todo })
+      await firestore.collection('todos').doc(id).delete()
     } catch (err) {
-      return rejectWithValue(err)
+      console.log('deleteTodoFirestore', err)
     }
   }
 )
@@ -52,7 +24,7 @@ export type Todo = {
 export type TodosState = {
   entities: Todo[]
   loading: 'idle' | 'pending'
-  currentRequestId: undefined
+  currentRequestId: string | undefined
   error: any
 }
 
@@ -67,9 +39,6 @@ export const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<Todo>) => {
-      state.entities.push(action.payload)
-    },
     toggleTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'isCompleted'>>) => {
       const { id, isCompleted } = action.payload
       const todo = state.entities.find((todo) => todo.id === id)
@@ -94,33 +63,11 @@ export const todosSlice = createSlice({
       })
     },
   },
-  extraReducers: {
-    [addTodoFirebase.pending.type]: (state, { meta }) => {
-      state.loading = 'pending'
-      state.currentRequestId = meta.requestId
-    },
-    [addTodoFirebase.fulfilled.type]: (state) => {
-      state.loading = 'idle'
-      state.currentRequestId = undefined
-    },
-    [addTodoFirebase.rejected.type]: (state, { payload }) => {
-      state.loading = 'idle'
-      state.entities = state.entities.filter((todo) => todo.id !== payload.id)
-      state.currentRequestId = undefined
-      state.error = payload
-    },
-  },
+  extraReducers: () => {},
 })
 
 // ActionType creators
-export const {
-  addTodo,
-  toggleTodo,
-  deleteTodo,
-  deleteCompleted,
-  editTodo,
-  completeAll,
-} = todosSlice.actions
+export const { toggleTodo, deleteTodo, deleteCompleted, editTodo, completeAll } = todosSlice.actions
 
 // State selectors
 export const selectTodos = (state: RootState) => state.todos
