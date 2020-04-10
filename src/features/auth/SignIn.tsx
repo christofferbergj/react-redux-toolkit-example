@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import { isEmpty } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useHistory } from 'react-router-dom'
 
-import { selectAuth, selectFirebaseAuth, signIn } from './authSlice'
+import { selectAuth } from './authSlice'
 
 // Components
 import { ElevatedBox, Inner } from 'components'
@@ -32,29 +32,32 @@ type FormData = {
 }
 
 export const SignIn = () => {
-  const [showPassword, setShowPassword] = React.useState(false)
-  const auth = useSelector(selectFirebaseAuth)
-  const dispatch = useDispatch()
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
+  const auth = useFirebase().auth()
+  const authState = useSelector(selectAuth)
   const history = useHistory()
   const LinkColor = { light: 'purple.500', dark: 'purple.300' }
   const toast = useToast()
   const { colorMode } = useColorMode()
-  const { loading, error } = useSelector(selectAuth)
   const { register, handleSubmit, errors } = useForm<FormData>()
 
-  !isEmpty(auth) && history.push('/')
+  !isEmpty(authState) && history.push('/')
 
-  useEffect(() => {
-    error &&
+  const handleSignIn = handleSubmit(async ({ email, password }) => {
+    try {
+      setIsLoading('pending')
+      await auth.signInWithEmailAndPassword(email, password)
+    } catch ({ code, message }) {
       toast({
         status: 'error',
-        description: error.message,
+        title: code,
+        description: message,
         isClosable: true,
       })
-  }, [error, toast])
-
-  const onSubmit = handleSubmit(async ({ email, password }) => {
-    await dispatch(signIn({ email, password }))
+    } finally {
+      setIsLoading('idle')
+    }
   })
 
   return (
@@ -63,22 +66,25 @@ export const SignIn = () => {
         <ElevatedBox>
           <Heading mb={8}>Sign in</Heading>
 
-          <Box as={'form'} onSubmit={onSubmit}>
+          <Box as={'form'} onSubmit={handleSignIn}>
             <Stack spacing={6} maxWidth={'containers.sm'}>
               <FormControl isInvalid={!!errors.email}>
                 <FormLabel htmlFor="email">Email address</FormLabel>
 
                 <Input
+                  defaultValue={'christofferbergj@gmail.com'}
                   ref={register({
-                    required: true,
-                    pattern: /^\S+@\S+$/i,
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                      message: 'Is your email correct?',
+                    },
                   })}
                   name="email"
                   type="text"
-                  placeholder={'your-email@gmail.com'}
-                  aria-describedby="email-helper-text"
+                  placeholder={'email@domain.com'}
                 />
-                <FormErrorMessage>Email is required</FormErrorMessage>
+                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isInvalid={!!errors.password}>
@@ -103,7 +109,7 @@ export const SignIn = () => {
 
               <Button
                 type={'submit'}
-                isLoading={loading === 'pending'}
+                isLoading={isLoading === 'pending'}
                 mt={6}
                 alignSelf={'flex-start'}
               >

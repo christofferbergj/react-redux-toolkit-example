@@ -1,8 +1,9 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { useFirestore } from 'react-redux-firebase'
 
 // Slice
-import { Todo, toggleTodo, editTodo, deleteTodoFirestore } from './todosSlice'
+import { Todo, toggleTodo, editTodo } from './todosSlice'
 
 // Components
 import {
@@ -18,13 +19,16 @@ import {
   Stack,
   Tooltip,
   useClipboard,
+  useToast,
 } from '@chakra-ui/core/dist'
 
 // Components prop types
 type Props = Todo & BoxProps
 
 export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
+  const firestore = useFirestore()
   const dispatch = useDispatch()
+  const toast = useToast()
   const { onCopy, hasCopied } = useClipboard(description)
 
   /**
@@ -32,6 +36,23 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
    * @type {string}
    */
   const copyDescriptionLabel = hasCopied ? 'Copied to clipboard' : 'Copy description'
+
+  /**
+   * Delete todo from firestore
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
+  const handleDeleteTodo = async (id: string) => {
+    try {
+      await firestore.collection('todos').doc(id).delete()
+    } catch ({ code, message }) {
+      toast({
+        status: 'error',
+        title: code,
+        description: message,
+      })
+    }
+  }
 
   return (
     <>
@@ -93,7 +114,7 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
                   fontSize="xs"
                 >
                   <IconButton
-                    onClick={() => dispatch(deleteTodoFirestore(id))}
+                    onClick={() => handleDeleteTodo(id)}
                     aria-label="Delete todo"
                     icon="close"
                     size={'sm'}

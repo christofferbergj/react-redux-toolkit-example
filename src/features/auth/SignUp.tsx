@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
-import { isEmpty } from 'react-redux-firebase'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { isEmpty, useFirebase, useFirestore } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
+import { timestamp } from 'app/firebase'
 
 // Auth slice
-import { selectAuth, signUp, NewUser, selectFirebaseAuth } from 'features/auth/authSlice'
+import { NewUser, selectAuth } from 'features/auth/authSlice'
 
 // Components
 import { ElevatedBox, Inner } from 'components'
@@ -28,23 +29,42 @@ import {
 
 export const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState(false)
-  const auth = useSelector(selectFirebaseAuth)
-  const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
+  const auth = useFirebase().auth()
+  const firestore = useFirestore()
+  const authState = useSelector(selectAuth)
   const history = useHistory()
-  const LinkColor = { light: 'purple.500', dark: 'purple.300' }
   const toast = useToast()
   const { colorMode } = useColorMode()
-  const { loading, error } = useSelector(selectAuth)
   const { register, handleSubmit, errors } = useForm<NewUser>()
 
-  !isEmpty(auth) && history.push('/')
+  const LinkColor = { light: 'purple.500', dark: 'purple.300' }
 
-  useEffect(() => {
-    error && toast({ status: 'error', description: error.message, isClosable: true })
-  }, [error, toast])
+  !isEmpty(authState) && history.push('/')
 
-  const onSubmit = handleSubmit((data) => {
-    dispatch(signUp(data))
+  const handleSignUp = handleSubmit(async ({ email, password, firstName, lastName }: NewUser) => {
+    setIsLoading('pending')
+    try {
+      const { user } = await auth.createUserWithEmailAndPassword(email, password)
+      firestore
+        .collection('users')
+        .doc(user?.uid as string)
+        .set({
+          firstName,
+          lastName,
+          initials: firstName[0] + lastName[0],
+          createdAt: timestamp(),
+        })
+    } catch ({ code, message }) {
+      toast({
+        status: 'error',
+        title: code,
+        description: message,
+        isClosable: true,
+      })
+    } finally {
+      setIsLoading('idle')
+    }
   })
 
   return (
@@ -53,7 +73,7 @@ export const SignUp = () => {
         <ElevatedBox>
           <Heading mb={8}>Sign up</Heading>
 
-          <Box as={'form'} onSubmit={onSubmit}>
+          <Box as={'form'} onSubmit={handleSignUp}>
             <Stack spacing={6} maxWidth={'containers.sm'}>
               <FormControl isInvalid={!!errors.firstName}>
                 <FormLabel htmlFor={'firstName'}>First name</FormLabel>
@@ -102,15 +122,10 @@ export const SignUp = () => {
                       value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                       message: 'Is your email correct?',
                     },
-                    minLength: {
-                      value: 3,
-                      message: 'too slow',
-                    },
                   })}
                   name="email"
                   type="text"
                   placeholder={'email@domain.com'}
-                  aria-describedby="email-helper-text"
                 />
                 <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
               </FormControl>
@@ -144,7 +159,7 @@ export const SignUp = () => {
 
               <Button
                 type={'submit'}
-                isLoading={loading === 'pending'}
+                isLoading={isLoading === 'pending'}
                 mt={6}
                 alignSelf={'flex-start'}
               >

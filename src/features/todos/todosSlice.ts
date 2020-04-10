@@ -1,19 +1,5 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
-import { getFirebase } from 'react-redux-firebase'
-
-export const deleteTodoFirestore = createAsyncThunk(
-  'todos/deleteTodoFirestore',
-  async (id: string, thunkAPI) => {
-    const firestore = getFirebase().firestore()
-
-    try {
-      await firestore.collection('todos').doc(id).delete()
-    } catch (err) {
-      console.log('deleteTodoFirestore', err)
-    }
-  }
-)
 
 export type Todo = {
   id: string

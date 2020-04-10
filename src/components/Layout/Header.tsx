@@ -1,10 +1,10 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { isEmpty } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { IoLogoGithub } from 'react-icons/all'
 
 // Slices
-import { selectFirebaseAuth, signOut } from 'features/auth/authSlice'
+import { selectAuth } from 'features/auth/authSlice'
 
 // Components
 import {
@@ -21,8 +21,8 @@ import {
 import { Inner } from 'components/Inner'
 
 export const Header = ({ ...rest }: BoxProps) => {
-  const dispatch = useDispatch()
-  const auth = useSelector(selectFirebaseAuth)
+  const auth = useFirebase().auth()
+  const authState = useSelector(selectAuth)
   const { colorMode, toggleColorMode } = useColorMode()
   const bgColor = { light: 'gray.50', dark: 'gray.800' }
 
@@ -41,8 +41,8 @@ export const Header = ({ ...rest }: BoxProps) => {
         {...rest}
       >
         <Inner display={'flex'} alignItems={'center'}>
-          {!isEmpty(auth) && (
-            <Button onClick={() => dispatch(signOut())} size={'xs'}>
+          {!isEmpty(authState) && (
+            <Button onClick={() => auth.signOut()} size={'xs'}>
               Sign out
             </Button>
           )}

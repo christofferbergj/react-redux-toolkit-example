@@ -5,7 +5,7 @@ import { useFirestore, useFirestoreConnect } from 'react-redux-firebase'
 import { RootState } from 'app/rootReducer'
 import { timestamp } from 'app/firebase'
 
-import { selectFirebaseAuth } from 'features/auth/authSlice'
+import { selectAuth } from 'features/auth/authSlice'
 
 // Todos slice
 import {
@@ -36,7 +36,7 @@ import {
 } from '@chakra-ui/core/dist'
 
 export const TodoList = () => {
-  const auth = useSelector(selectFirebaseAuth)
+  const auth = useSelector(selectAuth)
   const firestore = useFirestore()
   useFirestoreConnect({
     collection: 'todos',

@@ -1,13 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { selectFirebaseAuth } from 'features/auth/authSlice'
+import { selectAuth } from 'features/auth/authSlice'
 import { isLoaded } from 'react-redux-firebase'
 
 // Components
 import { Box, Spinner, useColorMode } from '@chakra-ui/core/dist'
 
 export const AuthIsLoaded = ({ children }: any) => {
-  const auth = useSelector(selectFirebaseAuth)
+  const auth = useSelector(selectAuth)
   const { colorMode } = useColorMode()
   const spinnerColor = { light: 'primary', dark: 'gray.200' }
   const spinnerEmptyColor = { light: 'gray.200', dark: 'gray.700' }
