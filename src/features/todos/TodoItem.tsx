@@ -1,9 +1,8 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { useFirestore } from 'react-redux-firebase'
 
 // Slice
-import { Todo, toggleTodo, editTodo } from './todosSlice'
+import { Todo } from './todosSlice'
 
 // Components
 import {
@@ -27,7 +26,6 @@ type Props = Todo & BoxProps
 
 export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
   const firestore = useFirestore()
-  const dispatch = useDispatch()
   const toast = useToast()
   const { onCopy, hasCopied } = useClipboard(description)
 
@@ -38,13 +36,55 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
   const copyDescriptionLabel = hasCopied ? 'Copied to clipboard' : 'Copy description'
 
   /**
-   * Delete todo from firestore
+   * Get todos docref
    * @param {string} id
+   * @returns {firebase.firestore.DocumentReference<firebase.firestore.DocumentData>}
+   */
+  const getDocRef = (id: string) => firestore.collection('todos').doc(id)
+
+  /**
+   * Delete todo from firestore
+   * @param {string} id - The id of the todo item
    * @returns {Promise<void>}
    */
   const handleDeleteTodo = async (id: string) => {
     try {
-      await firestore.collection('todos').doc(id).delete()
+      await getDocRef(id).delete()
+    } catch ({ code, message }) {
+      toast({
+        status: 'error',
+        title: code,
+        description: message,
+      })
+    }
+  }
+
+  /**
+   * Toggles completed status of todo
+   * @param {string} id - The id of the todo item
+   * @returns {Promise<void>}
+   */
+  const handleToggleTodo = async (id: string) => {
+    try {
+      await getDocRef(id).update({ isCompleted: !isCompleted })
+    } catch ({ code, message }) {
+      toast({
+        status: 'error',
+        title: code,
+        description: message,
+      })
+    }
+  }
+
+  /**
+   * Edits description of todo
+   * @param {string} id - The id of the todo item
+   * @param {string} description - The new description
+   * @returns {Promise<void>}
+   */
+  const handleEditTodo = async (id: string, description: string) => {
+    try {
+      await getDocRef(id).update({ description })
     } catch ({ code, message }) {
       toast({
         status: 'error',
@@ -68,7 +108,7 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
         <Stack isInline width={'full'} spacing={4} align={'center'}>
           <Checkbox
             isChecked={isCompleted}
-            onChange={() => dispatch(toggleTodo({ id, isCompleted }))}
+            onChange={() => handleToggleTodo(id)}
             variantColor={'purple'}
             size={'lg'}
           />
@@ -76,7 +116,7 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
           <Editable
             defaultValue={description}
             flex={1}
-            onSubmit={(value) => dispatch(editTodo({ id, description: value }))}
+            onSubmit={(value) => handleEditTodo(id, value)}
           >
             <EditablePreview width={'full'} />
             <EditableInput />

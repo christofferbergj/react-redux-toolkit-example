@@ -52,7 +52,11 @@ export const Header = ({ ...rest }: BoxProps) => {
               zIndex={11}
             >
               <Box>
-                <Avatar name={profile.displayName} src={profile.avatarUrl} size={'sm'} />
+                <Avatar
+                  name={profile.displayName}
+                  src={authState.photoURL || profile.avatarUrl}
+                  size={'sm'}
+                />
               </Box>
             </Tooltip>
           )}

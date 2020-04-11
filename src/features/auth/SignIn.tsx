@@ -80,7 +80,6 @@ export const SignIn = () => {
                 <FormLabel htmlFor="email">Email address</FormLabel>
 
                 <Input
-                  defaultValue={'christofferbergj@gmail.com'}
                   ref={register({
                     required: 'Email is required',
                     pattern: {
@@ -90,7 +89,7 @@ export const SignIn = () => {
                   })}
                   name="email"
                   type="text"
-                  placeholder={'email@domain.com'}
+                  placeholder={'john.doe@domain.com'}
                 />
                 <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
               </FormControl>

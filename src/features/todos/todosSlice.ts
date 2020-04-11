@@ -53,7 +53,7 @@ export const todosSlice = createSlice({
 })
 
 // ActionType creators
-export const { toggleTodo, deleteTodo, deleteCompleted, editTodo, completeAll } = todosSlice.actions
+export const { deleteCompleted, completeAll } = todosSlice.actions
 
 // State selectors
 export const selectTodos = (state: RootState) => state.todos

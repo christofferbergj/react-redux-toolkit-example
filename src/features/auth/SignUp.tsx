@@ -80,7 +80,6 @@ export const SignUp = () => {
               <FormControl isInvalid={!!errors.firstName}>
                 <FormLabel htmlFor={'firstName'}>First name</FormLabel>
                 <Input
-                  defaultValue={'Christoffer Berg'}
                   ref={register({
                     required: 'First name is required',
                     maxLength: {
@@ -90,6 +89,7 @@ export const SignUp = () => {
                   })}
                   name={'firstName'}
                   type={'text'}
+                  placeholder="John"
                 />
 
                 <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
@@ -98,7 +98,6 @@ export const SignUp = () => {
               <FormControl isInvalid={!!errors.lastName}>
                 <FormLabel htmlFor={'lastName'}>Last name</FormLabel>
                 <Input
-                  defaultValue={'Jensen'}
                   ref={register({
                     required: 'Last name is required',
                     maxLength: {
@@ -108,6 +107,7 @@ export const SignUp = () => {
                   })}
                   name={'lastName'}
                   type={'text'}
+                  placeholder="Doe"
                 />
 
                 <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
@@ -117,7 +117,6 @@ export const SignUp = () => {
                 <FormLabel htmlFor="email">Email address</FormLabel>
 
                 <Input
-                  defaultValue={'christofferbergj@gmail.com'}
                   ref={register({
                     required: 'Email is required',
                     pattern: {
@@ -127,7 +126,7 @@ export const SignUp = () => {
                   })}
                   name="email"
                   type="text"
-                  placeholder={'email@domain.com'}
+                  placeholder={'john.doe@domain.com'}
                 />
                 <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
               </FormControl>
