@@ -30,7 +30,7 @@ export const Footer = ({ ...rest }: BoxProps) => {
           alignItems={'center'}
         >
           <Text fontSize={'sm'} mb={2}>
-            Developed by Christoffer Berg
+            Christoffer Berg Jensen
           </Text>
 
           <Stack isInline spacing={2}>
