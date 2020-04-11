@@ -71,7 +71,9 @@ export const SignUp = () => {
     <>
       <Inner>
         <ElevatedBox>
-          <Heading mb={8}>Sign up</Heading>
+          <Heading size={'lg'} mb={8}>
+            Sign up
+          </Heading>
 
           <Box as={'form'} onSubmit={handleSignUp}>
             <Stack spacing={6} maxWidth={'containers.sm'}>

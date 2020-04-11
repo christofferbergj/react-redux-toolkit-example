@@ -1,13 +1,14 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
+import { RootState } from 'app/rootReducer'
+import { selectAuth } from 'features/auth/authSlice'
 import { IoLogoGithub } from 'react-icons/all'
 
-// Slices
-import { selectAuth } from 'features/auth/authSlice'
-
 // Components
+import { Inner } from 'components/Inner'
 import {
+  Avatar,
   Box,
   BoxProps,
   Button,
@@ -18,12 +19,13 @@ import {
   Tooltip,
   useColorMode,
 } from '@chakra-ui/core/dist'
-import { Inner } from 'components/Inner'
 
 export const Header = ({ ...rest }: BoxProps) => {
   const auth = useFirebase().auth()
   const authState = useSelector(selectAuth)
+  const profile: any = useSelector((state: RootState) => state.firebase.profile)
   const { colorMode, toggleColorMode } = useColorMode()
+
   const bgColor = { light: 'gray.50', dark: 'gray.800' }
 
   return (
@@ -41,13 +43,27 @@ export const Header = ({ ...rest }: BoxProps) => {
         {...rest}
       >
         <Inner display={'flex'} alignItems={'center'}>
-          {!isEmpty(authState) && (
-            <Button onClick={() => auth.signOut()} size={'xs'}>
-              Sign out
-            </Button>
+          {authState.email && (
+            <Tooltip
+              label={authState.email}
+              aria-label={authState.email}
+              fontSize={'xs'}
+              placement="bottom"
+              zIndex={11}
+            >
+              <Box>
+                <Avatar name={profile.displayName} src={profile.avatarUrl} size={'sm'} />
+              </Box>
+            </Tooltip>
           )}
 
           <Stack isInline spacing={3} ml={'auto'} align={'center'}>
+            {!isEmpty(authState) && (
+              <Button onClick={() => auth.signOut()} size={'xs'}>
+                Sign out
+              </Button>
+            )}
+
             <Flex align={'center'}>
               <Link
                 href="https://github.com/christofferberg/react-redux-toolkit-example"

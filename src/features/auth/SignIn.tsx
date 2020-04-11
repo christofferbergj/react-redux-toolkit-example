@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useHistory } from 'react-router-dom'
+import { IoLogoGoogle } from 'react-icons/all'
 
 import { selectAuth } from './authSlice'
 
@@ -32,8 +33,9 @@ type FormData = {
 }
 
 export const SignIn = () => {
-  const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
+  const [showPassword, setShowPassword] = useState(false)
+  const firebase = useFirebase()
   const auth = useFirebase().auth()
   const authState = useSelector(selectAuth)
   const history = useHistory()
@@ -60,11 +62,17 @@ export const SignIn = () => {
     }
   })
 
+  const loginWithGoogle = () => {
+    return firebase.login({ provider: 'google', type: 'popup' })
+  }
+
   return (
     <>
       <Inner>
         <ElevatedBox>
-          <Heading mb={8}>Sign in</Heading>
+          <Heading size={'lg'} mb={8}>
+            Sign in
+          </Heading>
 
           <Box as={'form'} onSubmit={handleSignIn}>
             <Stack spacing={6} maxWidth={'containers.sm'}>
@@ -107,23 +115,24 @@ export const SignIn = () => {
                 <FormErrorMessage>Password is required</FormErrorMessage>
               </FormControl>
 
-              <Button
-                type={'submit'}
-                isLoading={isLoading === 'pending'}
-                mt={6}
-                alignSelf={'flex-start'}
-              >
-                Sign in
-              </Button>
+              <Stack isInline spacing={3} align={'center'} mt={6}>
+                <Button type={'submit'} size={'sm'} isLoading={isLoading === 'pending'}>
+                  Sign in
+                </Button>
+
+                <Button onClick={loginWithGoogle} size={'sm'} leftIcon={IoLogoGoogle}>
+                  Sign in with Google
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         </ElevatedBox>
 
         <Text mt={5} fontSize={'sm'}>
-          If you don't have an account, go to {/*
+          Don't have an account? Sign up {/*
           // @ts-ignore */}
           <Link as={RouterLink} to={'/sign-up'} color={LinkColor[colorMode]}>
-            sign up
+            here
           </Link>
         </Text>
       </Inner>
