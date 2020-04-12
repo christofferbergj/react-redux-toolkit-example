@@ -118,7 +118,12 @@ export const TodoItem = ({ description, id, isCompleted, ...rest }: Props) => {
             flex={1}
             onSubmit={(value) => handleEditTodo(id, value)}
           >
-            <EditablePreview width={'full'} />
+            <EditablePreview
+              width={'full'}
+              color={isCompleted ? 'gray.500' : undefined}
+              opacity={isCompleted ? 0.4 : undefined}
+              textDecor={isCompleted ? 'line-through' : undefined}
+            />
             <EditableInput />
           </Editable>
 

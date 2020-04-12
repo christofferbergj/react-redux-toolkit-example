@@ -14,7 +14,7 @@ export const AuthIsLoaded = ({ children }: any) => {
 
   if (!isLoaded(auth))
     return (
-      <Box position={'absolute'} top={'50%'} left={'50%'} transform={'translate(-50%, -50%'}>
+      <Box position={'absolute'} top={'50%'} left={'50%'} transform={'translate(-50%, -50%)'}>
         <Spinner
           size={'xl'}
           color={spinnerColor[colorMode]}

@@ -2,7 +2,7 @@ import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
 
 // Todos selector
-import { selectTodos } from 'features/todos/todosSlice'
+import { selectTodos, Todo } from 'features/todos/todosSlice'
 
 export enum VisibilityFilters {
   SHOW_ALL = 'SHOW_ALL',
@@ -25,17 +25,20 @@ export const { setFilter } = filtersSlice.actions
 
 // Selectors
 export const selectFilter = (state: RootState) => state.visibilityFilter
-export const selectVisibleTodos = createSelector([selectTodos, selectFilter], (todos, filter) => {
-  switch (filter) {
-    case VisibilityFilters.SHOW_ALL:
-      return todos.entities
-    case VisibilityFilters.SHOW_COMPLETED:
-      return todos.entities.filter((todo) => todo.isCompleted)
-    case VisibilityFilters.SHOW_ACTIVE:
-      return todos.entities.filter((todo) => !todo.isCompleted)
-    default:
-      return todos.entities
+export const selectVisibleTodos = createSelector(
+  [selectTodos, selectFilter],
+  (todos: Todo[], filter) => {
+    switch (filter) {
+      case VisibilityFilters.SHOW_ALL:
+        return todos
+      case VisibilityFilters.SHOW_COMPLETED:
+        return todos.filter((todo) => todo.isCompleted)
+      case VisibilityFilters.SHOW_ACTIVE:
+        return todos.filter((todo) => !todo.isCompleted)
+      default:
+        return todos
+    }
   }
-})
+)
 
 export default filtersSlice.reducer

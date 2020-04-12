@@ -1,53 +1,55 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { usePrevious } from 'react-use'
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase'
-import { RootState } from 'app/rootReducer'
 import { timestamp } from 'app/firebase'
 
 import { selectAuth } from 'features/auth/authSlice'
 
 // Todos slice
-import {
-  deleteCompleted,
-  completeAll,
-  selectActiveTodosCount,
-  selectCompleteTodosCount,
-  Todo,
-} from './todosSlice'
+import { selectActiveTodosCount, selectCompleteTodosCount, Todo } from './todosSlice'
 
 // Filters slice
-import { VisibilityFilters, setFilter, selectFilter } from 'features/visibilityFilter/filtersSlice'
+import {
+  VisibilityFilters,
+  setFilter,
+  selectFilter,
+  selectVisibleTodos,
+} from 'features/visibilityFilter/filtersSlice'
 
 // Components
 import { TodoItem } from './TodoItem'
 import { FilterButtons } from 'features/visibilityFilter'
 import {
+  Box,
   Button,
   Divider,
   Flex,
   FormControl,
+  FormControlProps,
   Input,
   InputGroup,
   InputRightElement,
   List,
   Stack,
+  Text,
   useToast,
 } from '@chakra-ui/core/dist'
 
-export const TodoList = () => {
+export const TodoList = ({ ...rest }: FormControlProps) => {
   const auth = useSelector(selectAuth)
   const firestore = useFirestore()
+  const path = firestore.collection('todos')
   useFirestoreConnect({
     collection: 'todos',
     where: ['author_uid', '==', auth.uid],
-    orderBy: ['createdAt', 'asc'],
+    orderBy: ['createdAt', 'desc'],
   })
   const toast = useToast()
   const dispatch = useDispatch()
   const [todoDescription, setTodoDescription] = useState<string | undefined>('')
-  const prevTodoDescription = usePrevious(todoDescription)
-  const todos: Todo[] = useSelector((state: RootState) => state.firestore.ordered.todos)
+  const [updateCompletedIsLoading, setUpdateCompletedIsLoading] = useState(false)
+  const [deleteCompletedIsLoading, setDeleteCompletedIsLoading] = useState(false)
+  const todos: Todo[] = useSelector(selectVisibleTodos)
 
   // State selector
   const activeTodosCount = useSelector(selectActiveTodosCount)
@@ -66,12 +68,13 @@ export const TodoList = () => {
   }, [activeTodosCount, completeTodosCount, dispatch, visibilityFilter])
 
   /**
-   * Handles adding a todo
+   * Handles adding a todo to Firestore
    * @param {React.ChangeEvent<HTMLInputElement>} event
    */
   const handleAddTodo = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     if (!todoDescription) return
+    const savedDescription = todoDescription
 
     const todo = {
       author_uid: auth.uid,
@@ -82,22 +85,85 @@ export const TodoList = () => {
 
     try {
       setTodoDescription('')
-      await firestore.collection('todos').add(todo)
-    } catch (err) {
+      await path.add(todo)
+    } catch ({ code, message }) {
       toast({
-        title: 'Could not add todo',
-        description: err.message,
-        duration: 3000,
+        title: code,
+        description: message,
         status: 'error',
       })
 
-      setTodoDescription(prevTodoDescription)
+      setTodoDescription(savedDescription)
     }
   }
 
+  /**
+   * Sets isCompleted status to true of all todo items in Firestore
+   * @returns {Promise<void>}
+   */
+  const handleUpdateCompleteStatusAll = async (shouldComplete: boolean) => {
+    try {
+      setUpdateCompletedIsLoading(true)
+
+      const response = await path
+        .where('author_uid', '==', auth.uid)
+        .where('isCompleted', '==', !shouldComplete)
+        .get()
+      const WriteBatch = firestore.batch()
+
+      response.docs.forEach((doc) => {
+        const docRef = path.doc(doc.id)
+        WriteBatch.update(docRef, { isCompleted: shouldComplete })
+      })
+
+      await WriteBatch.commit()
+    } catch ({ code, message }) {
+      toast({
+        title: code,
+        description: message,
+        status: 'error',
+      })
+    } finally {
+      setUpdateCompletedIsLoading(false)
+    }
+  }
+
+  /**
+   * Deletes all completed todos from Firestore
+   * @returns {Promise<void>}
+   */
+  const handleDeleteCompleted = async () => {
+    try {
+      setDeleteCompletedIsLoading(true)
+
+      const response = await path
+        .where('author_uid', '==', auth.uid)
+        .where('isCompleted', '==', true)
+        .get()
+      const WriteBatch = firestore.batch()
+
+      response.docs.forEach((doc) => {
+        const docRef = path.doc(doc.id)
+        WriteBatch.delete(docRef)
+      })
+
+      await WriteBatch.commit()
+    } catch ({ code, message }) {
+      toast({
+        title: code,
+        description: message,
+        status: 'error',
+      })
+    } finally {
+      setDeleteCompletedIsLoading(false)
+    }
+  }
+
+  if (!todos) return <Text>Loading todos..</Text>
+
   return (
     <>
-      <FormControl as="form" onSubmit={handleAddTodo}>
+      <FormControl as="form" onSubmit={handleAddTodo} {...rest}>
         <InputGroup size={'lg'} mt={5}>
           <Input
             onChange={({ currentTarget }: ChangeEvent<HTMLInputElement>) =>
@@ -105,7 +171,7 @@ export const TodoList = () => {
             }
             _focus={{ shadow: 'outline', borderColor: 'transparent' }}
             focusBorderColor={'none'}
-            placeholder="What needs to be done?"
+            placeholder={todos.length > 0 ? 'What needs to be done?' : 'Add your first todo'}
             pr="4.5rem"
             type="text"
             value={todoDescription}
@@ -124,53 +190,54 @@ export const TodoList = () => {
         </InputGroup>
       </FormControl>
 
-      {todos && todos.length > 0 && (
-        <List
-          as={'ul'}
-          display={'flex'}
-          flexDirection={'column'}
-          alignItems={'start'}
-          spacing={2}
-          mt={8}
-        >
-          {todos.map(({ id, description, isCompleted }) => (
-            <TodoItem key={id} id={id} description={description} isCompleted={isCompleted} />
-          ))}
-        </List>
-      )}
+      <Box mt={8}>
+        {todos.length > 0 && (
+          <List
+            as={'ul'}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'start'}
+            spacing={2}
+          >
+            {todos.map(({ id, description, isCompleted }) => (
+              <TodoItem key={id} id={id} description={description} isCompleted={isCompleted} />
+            ))}
+          </List>
+        )}
+      </Box>
 
       <Divider my={5} />
 
       <Flex width={'full'} direction={{ base: 'column', md: 'row' }} align={{ md: 'center' }}>
-        {(activeTodosCount > 0 || completeTodosCount > 0) && (
-          <Stack isInline spacing={5} mb={{ base: 6, md: 0 }}>
-            {activeTodosCount > 0 && (
-              <Button
-                onClick={() => dispatch(completeAll())}
-                leftIcon={'check-circle'}
-                ml={1}
-                size={'xs'}
-                transition={'none'}
-                variant={'link'}
-              >
-                Complete all
-              </Button>
-            )}
+        <Stack isInline spacing={5} mb={{ base: 6, md: 0 }}>
+          <Button
+            onClick={() => handleUpdateCompleteStatusAll(true)}
+            isDisabled={!activeTodosCount}
+            isLoading={updateCompletedIsLoading}
+            loadingText={'Saving'}
+            leftIcon={'check-circle'}
+            ml={1}
+            size={'xs'}
+            transition={'none'}
+            variant={'link'}
+          >
+            Complete all
+          </Button>
 
-            {completeTodosCount > 0 && (
-              <Button
-                onClick={() => dispatch(deleteCompleted())}
-                leftIcon={'delete'}
-                ml={1}
-                size={'xs'}
-                transition={'none'}
-                variant={'link'}
-              >
-                Clear completed
-              </Button>
-            )}
-          </Stack>
-        )}
+          <Button
+            onClick={handleDeleteCompleted}
+            isDisabled={!completeTodosCount || deleteCompletedIsLoading}
+            isLoading={deleteCompletedIsLoading}
+            loadingText={'Removing'}
+            leftIcon={'delete'}
+            ml={1}
+            size={'xs'}
+            transition={'none'}
+            variant={'link'}
+          >
+            Remove completed
+          </Button>
+        </Stack>
 
         <FilterButtons isInline spacing={2} ml={{ md: 'auto' }} />
       </Flex>

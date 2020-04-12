@@ -1,4 +1,4 @@
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'app/rootReducer'
 
 export type Todo = {
@@ -24,47 +24,20 @@ const initialState: TodosState = {
 export const todosSlice = createSlice({
   name: 'todos',
   initialState,
-  reducers: {
-    toggleTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'isCompleted'>>) => {
-      const { id, isCompleted } = action.payload
-      const todo = state.entities.find((todo) => todo.id === id)
-
-      if (todo) todo.isCompleted = !isCompleted
-    },
-    deleteTodo: (state, action: PayloadAction<Todo['id']>) => {
-      state.entities = state.entities.filter((todo) => todo.id !== action.payload)
-    },
-    editTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'description'>>) => {
-      const { id, description } = action.payload
-      const todo = state.entities.find((todo) => todo.id === id)
-
-      if (todo) todo.description = description
-    },
-    deleteCompleted: (state) => {
-      state.entities = state.entities.filter((todo) => !todo.isCompleted)
-    },
-    completeAll: (state) => {
-      state.entities.forEach((todo) => {
-        todo.isCompleted = true
-      })
-    },
-  },
+  reducers: {},
   extraReducers: () => {},
 })
 
-// ActionType creators
-export const { deleteCompleted, completeAll } = todosSlice.actions
-
 // State selectors
-export const selectTodos = (state: RootState) => state.todos
-export const selectTodosCount = createSelector(selectTodos, ({ entities }) => entities.length)
+export const selectTodos = (state: RootState) => state.firestore.ordered.todos
+export const selectTodosCount = createSelector(selectTodos, (todos) => todos.length)
 export const selectActiveTodosCount = createSelector(
   selectTodos,
-  ({ entities }) => entities.filter((todo) => !todo.isCompleted).length
+  (todos: Todo[]) => todos && todos.filter((todo) => !todo.isCompleted).length
 )
 export const selectCompleteTodosCount = createSelector(
   selectTodos,
-  ({ entities }) => entities.filter((todo) => todo.isCompleted).length
+  (todos: Todo[]) => todos && todos.filter((todo) => todo.isCompleted).length
 )
 
 export default todosSlice.reducer

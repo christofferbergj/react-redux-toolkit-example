@@ -37,7 +37,7 @@ export const Header = ({ ...rest }: BoxProps) => {
         width={'100%'}
         zIndex={10}
         bg={bgColor[colorMode]}
-        py={3}
+        py={[1, 2]}
         mb={10}
         borderBottomWidth={'1px'}
         {...rest}

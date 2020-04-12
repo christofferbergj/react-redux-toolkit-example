@@ -11,7 +11,7 @@ export const Main = ({ children, ...rest }: BoxProps) => {
         role={'main'}
         direction={'column'}
         flex={1}
-        pt={32}
+        pt={['90px', '100px', '125px']}
         mb={{ base: 20, md: 32 }}
         {...rest}
       >
