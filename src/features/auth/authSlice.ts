@@ -84,5 +84,6 @@ export const authSlice = createSlice({
 
 // Auth selector
 export const selectAuth = (state: RootState) => state.firebase.auth
+export const selectProfile = (state: RootState) => state.firebase.profile
 
 export default authSlice.reducer

@@ -16,6 +16,7 @@ import {
   IconButton,
   Link,
   Stack,
+  Text,
   Tooltip,
   useColorMode,
 } from '@chakra-ui/core/dist'
@@ -43,21 +44,22 @@ export const Header = ({ ...rest }: BoxProps) => {
         {...rest}
       >
         <Inner display={'flex'} alignItems={'center'}>
-          {authState.email && (
+          {profile.email && (
             <Tooltip
-              label={authState.email}
-              aria-label={authState.email}
+              label={profile.email}
+              aria-label={profile.email}
               fontSize={'xs'}
               placement="bottom"
               zIndex={11}
             >
-              <Box>
-                <Avatar
-                  name={profile.displayName}
-                  src={authState.photoURL || profile.avatarUrl}
-                  size={'sm'}
-                />
-              </Box>
+              <Flex alignItems={'center'}>
+                <Avatar name={profile.displayName} src={profile.photoURL} size={'sm'} />
+                {profile.displayName && (
+                  <Text fontWeight={'medium'} lineHeight={'shorter'} ml={3} fontSize={'sm'}>
+                    {profile.displayName}
+                  </Text>
+                )}
+              </Flex>
             </Tooltip>
           )}
 

@@ -26,10 +26,12 @@ import {
   useColorMode,
   useToast,
 } from '@chakra-ui/core/dist'
+import { useSendEmailVerificationLink } from '../../hooks/useSendEmailVerificationLink'
 
 export const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
+  const { sendEmailVerificationLink } = useSendEmailVerificationLink()
   const auth = useFirebase().auth()
   const firestore = useFirestore()
   const authState = useSelector(selectAuth)
@@ -46,6 +48,7 @@ export const SignUp = () => {
     setIsLoading('pending')
     try {
       const { user } = await auth.createUserWithEmailAndPassword(email, password)
+
       firestore
         .collection('users')
         .doc(user?.uid as string)
@@ -55,6 +58,8 @@ export const SignUp = () => {
           initials: firstName[0] + lastName[0],
           createdAt: timestamp(),
         })
+
+      await sendEmailVerificationLink()
     } catch ({ code, message }) {
       toast({
         status: 'error',

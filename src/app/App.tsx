@@ -4,13 +4,14 @@ import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 // Features
 import { TodosExample } from 'features/todos'
 import { CounterExample } from 'features/counter'
+import { UsersExample } from 'features/users'
 import { SignIn, SignUp } from 'features/auth'
 
 // Components
 import { Stack } from '@chakra-ui/core/dist'
 import { AppLayout } from 'components/Layout'
 import { PrivateRoute } from 'components'
-import { UsersExample } from '../features/users'
+import { VerifiedUser } from '../components/VerifiedUser'
 
 const App = () => {
   return (
@@ -27,7 +28,10 @@ const App = () => {
 
           <PrivateRoute exact path="/">
             <Stack spacing={{ base: 6, lg: 8 }}>
-              <TodosExample />
+              <VerifiedUser>
+                <TodosExample />
+              </VerifiedUser>
+
               <CounterExample />
               <UsersExample />
             </Stack>
