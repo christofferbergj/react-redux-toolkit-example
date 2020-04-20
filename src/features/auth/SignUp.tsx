@@ -58,8 +58,6 @@ export const SignUp = () => {
           initials: firstName[0] + lastName[0],
           createdAt: timestamp(),
         })
-
-      await sendEmailVerificationLink()
     } catch ({ code, message }) {
       toast({
         status: 'error',
