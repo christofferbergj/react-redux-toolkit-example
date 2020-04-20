@@ -31,7 +31,6 @@ import { useSendEmailVerificationLink } from '../../hooks/useSendEmailVerificati
 export const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
-  const { sendEmailVerificationLink } = useSendEmailVerificationLink()
   const auth = useFirebase().auth()
   const firestore = useFirestore()
   const authState = useSelector(selectAuth)
