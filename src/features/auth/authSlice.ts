@@ -57,6 +57,10 @@ export const signUp = createAsyncThunk<any, NewUser, { rejectValue: AuthError }>
   }
 )
 
+export const handleSignInWithGoogle = () => {
+  return getFirebase().login({ provider: 'google', type: 'popup' })
+}
+
 const initialState: AuthState = {
   loading: 'idle',
   currentRequestId: undefined,

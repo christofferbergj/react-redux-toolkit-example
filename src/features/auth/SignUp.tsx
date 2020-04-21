@@ -6,7 +6,7 @@ import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { timestamp } from 'app/firebase'
 
 // Auth slice
-import { NewUser, selectAuth } from 'features/auth/authSlice'
+import { handleSignInWithGoogle, NewUser, selectAuth } from 'features/auth/authSlice'
 
 // Components
 import { ElevatedBox, Inner } from 'components'
@@ -26,7 +26,7 @@ import {
   useColorMode,
   useToast,
 } from '@chakra-ui/core/dist'
-import { useSendEmailVerificationLink } from '../../hooks/useSendEmailVerificationLink'
+import { IoLogoGoogle } from 'react-icons/all'
 
 export const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState(false)
@@ -160,14 +160,20 @@ export const SignUp = () => {
                 <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
               </FormControl>
 
-              <Button
-                type={'submit'}
-                isLoading={isLoading === 'pending'}
-                mt={6}
-                alignSelf={'flex-start'}
-              >
-                Sign up
-              </Button>
+              <Stack isInline spacing={3} align={'center'} mt={6}>
+                <Button
+                  type={'submit'}
+                  size={'sm'}
+                  isLoading={isLoading === 'pending'}
+                  alignSelf={'flex-start'}
+                >
+                  Sign up
+                </Button>
+
+                <Button onClick={handleSignInWithGoogle} size={'sm'} leftIcon={IoLogoGoogle}>
+                  Sign up with Google
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         </ElevatedBox>

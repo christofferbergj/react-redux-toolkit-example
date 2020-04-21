@@ -5,7 +5,7 @@ import { useSendEmailVerificationLink } from 'hooks/useSendEmailVerificationLink
 
 export const VerifyEmail = ({ ...rest }) => {
   const { colorMode } = useColorMode()
-  const { loading, sendEmailVerificationLink } = useSendEmailVerificationLink()
+  const { loading, sendEmailVerificationLink, emailSent } = useSendEmailVerificationLink()
 
   const borderColor = { light: 'yellow.400', dark: 'yellow.500' }
 
@@ -24,7 +24,14 @@ export const VerifyEmail = ({ ...rest }) => {
             confirmation email
           </Text>
 
-          <Button isLoading={loading} onClick={() => sendEmailVerificationLink(true)} mt={6}>
+          <Button
+            isLoading={loading || emailSent}
+            loadingText={
+              loading ? 'Sending email' : emailSent ? 'Awaiting confirmation' : undefined
+            }
+            onClick={() => sendEmailVerificationLink(true)}
+            mt={6}
+          >
             Send confirmation email
           </Button>
         </ElevatedBox>

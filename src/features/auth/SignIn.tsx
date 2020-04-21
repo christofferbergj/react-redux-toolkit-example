@@ -6,7 +6,7 @@ import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useHistory } from 'react-router-dom'
 import { IoLogoGoogle } from 'react-icons/all'
 
-import { selectAuth } from './authSlice'
+import { handleSignInWithGoogle, selectAuth } from './authSlice'
 
 // Components
 import { ElevatedBox, Inner } from 'components'
@@ -35,7 +35,6 @@ type FormData = {
 export const SignIn = () => {
   const [isLoading, setIsLoading] = useState<'idle' | 'pending'>('idle')
   const [showPassword, setShowPassword] = useState(false)
-  const firebase = useFirebase()
   const auth = useFirebase().auth()
   const authState = useSelector(selectAuth)
   const history = useHistory()
@@ -46,7 +45,7 @@ export const SignIn = () => {
 
   !isEmpty(authState) && history.push('/')
 
-  const handleSignIn = handleSubmit(async ({ email, password }) => {
+  const handleSignInWithEmailAndPassword = handleSubmit(async ({ email, password }) => {
     try {
       setIsLoading('pending')
       await auth.signInWithEmailAndPassword(email, password)
@@ -62,10 +61,6 @@ export const SignIn = () => {
     }
   })
 
-  const loginWithGoogle = () => {
-    return firebase.login({ provider: 'google', type: 'popup' })
-  }
-
   return (
     <>
       <Inner>
@@ -74,7 +69,7 @@ export const SignIn = () => {
             Sign in
           </Heading>
 
-          <Box as={'form'} onSubmit={handleSignIn}>
+          <Box as={'form'} onSubmit={handleSignInWithEmailAndPassword}>
             <Stack spacing={6} maxWidth={'containers.sm'}>
               <FormControl isInvalid={!!errors.email}>
                 <FormLabel htmlFor="email">Email address</FormLabel>
@@ -119,7 +114,7 @@ export const SignIn = () => {
                   Sign in
                 </Button>
 
-                <Button onClick={loginWithGoogle} size={'sm'} leftIcon={IoLogoGoogle}>
+                <Button onClick={handleSignInWithGoogle} size={'sm'} leftIcon={IoLogoGoogle}>
                   Sign in with Google
                 </Button>
               </Stack>
